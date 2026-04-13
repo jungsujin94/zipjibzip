@@ -16,9 +16,48 @@
 
     .logo {
       display: block;
-      margin: 0 auto 40px;
+      margin: 0 auto 24px;
       max-height: 144px;
       width: auto;
+    }
+
+    .disclaimer {
+      text-align: center;
+      font-size: 0.78rem;
+      color: #aaa;
+      margin-bottom: 32px;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: 1280px;
+      margin: 0 auto 36px;
+    }
+
+    .tab {
+      border: 1.5px solid #ddd;
+      background: #fff;
+      border-radius: 999px;
+      padding: 8px 20px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: #666;
+      cursor: pointer;
+      transition: all .18s ease;
+    }
+
+    .tab:hover {
+      border-color: #aaa;
+      color: #222;
+    }
+
+    .tab.active {
+      background: #1a1a1a;
+      border-color: #1a1a1a;
+      color: #fff;
     }
 
     .grid {
@@ -44,6 +83,10 @@
     .card:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 32px rgba(0, 0, 0, .14);
+    }
+
+    .card.hidden {
+      display: none;
     }
 
     .img-wrap {
@@ -96,20 +139,21 @@
       height: 22px;
       width: auto;
     }
-
-    .disclaimer {
-      text-align: center;
-      font-size: 0.78rem;
-      color: #aaa;
-      margin-bottom: 40px;
-    }
   </style>
 </head>
 <body>
   <img src="images/zipjibzip_nobg.png" alt="zipjibzip" class="logo">
   <p class="disclaimer">이 포스팅은 오늘의집 큐레이터 활동의 일환으로, 구매시 이에 따른 일정액의 수수료를 제공받습니다.</p>
+  <div class="tabs">
+    <button class="tab active" data-filter="전체">전체</button>
+    <button class="tab" data-filter="조명">조명</button>
+    <button class="tab" data-filter="의자">의자</button>
+    <button class="tab" data-filter="테이블">테이블</button>
+    <button class="tab" data-filter="수납">수납</button>
+    <button class="tab" data-filter="소품">소품</button>
+  </div>
   <div class="grid">
-    <a class="card" href="https://ozip.me/HEXqc71?af" target="_blank" rel="noopener noreferrer">
+    <a class="card" href="https://ozip.me/HEXqc71?af" target="_blank" rel="noopener noreferrer" data-category="조명">
       <div class="img-wrap">
         <img src="products/artemide-nessino-table-lamp_card_1.png" alt="아르테미데 네시노 테이블 램프" loading="lazy">
       </div>
@@ -121,7 +165,7 @@
         </div>
       </div>
     </a>
-    <a class="card" href="https://ozip.me/uEh0J5D?af" target="_blank" rel="noopener noreferrer">
+    <a class="card" href="https://ozip.me/uEh0J5D?af" target="_blank" rel="noopener noreferrer" data-category="의자">
       <div class="img-wrap">
         <img src="products/coldpog-nugu-easy-chair-blue-check_card_1.png" alt="콜드포그 누구 이지체어 블루체크" loading="lazy">
       </div>
@@ -133,7 +177,7 @@
         </div>
       </div>
     </a>
-    <a class="card" href="https://ozip.me/51CVYx8?af" target="_blank" rel="noopener noreferrer">
+    <a class="card" href="https://ozip.me/51CVYx8?af" target="_blank" rel="noopener noreferrer" data-category="테이블">
       <div class="img-wrap">
         <img src="products/lebing-tempered-glass-floor-table-1000_card_1.png" alt="레빙 강화유리 좌식 테이블 1000" loading="lazy">
       </div>
@@ -145,7 +189,7 @@
         </div>
       </div>
     </a>
-    <a class="card" href="https://ozip.me/d0vX0QI?af" target="_blank" rel="noopener noreferrer">
+    <a class="card" href="https://ozip.me/d0vX0QI?af" target="_blank" rel="noopener noreferrer" data-category="수납">
       <div class="img-wrap">
         <img src="products/mobrick-no-drill-wall-cabinet_card_1.png" alt="모브릭 무타공 벽 수납장" loading="lazy">
       </div>
@@ -157,7 +201,7 @@
         </div>
       </div>
     </a>
-    <a class="card" href="https://ozip.me/IpDmnKH?af" target="_blank" rel="noopener noreferrer">
+    <a class="card" href="https://ozip.me/IpDmnKH?af" target="_blank" rel="noopener noreferrer" data-category="테이블">
       <div class="img-wrap">
         <img src="products/nordic-wood-round-dining-table-retro-blue_card_1.png" alt="노르딕 원목 원형 다이닝 테이블 레트로 블루" loading="lazy">
       </div>
@@ -169,7 +213,7 @@
         </div>
       </div>
     </a>
-    <a class="card" href="https://ozip.me/75jtAuw?af" target="_blank" rel="noopener noreferrer">
+    <a class="card" href="https://ozip.me/75jtAuw?af" target="_blank" rel="noopener noreferrer" data-category="소품">
       <div class="img-wrap">
         <img src="products/retro-antique-round-pendulum-clock-green_card_1.png" alt="레트로 앤틱 원형 진자시계 그린" loading="lazy">
       </div>
@@ -181,7 +225,7 @@
         </div>
       </div>
     </a>
-    <a class="card" href="https://ozip.me/Iwk7fqS?af" target="_blank" rel="noopener noreferrer">
+    <a class="card" href="https://ozip.me/Iwk7fqS?af" target="_blank" rel="noopener noreferrer" data-category="수납">
       <div class="img-wrap">
         <img src="products/on-lofi-3drawer-storage-800_card_1.png" alt="온 로피 3단 서랍장 800" loading="lazy">
       </div>
@@ -193,7 +237,7 @@
         </div>
       </div>
     </a>
-    <a class="card" href="https://ozip.me/bL5jlyR?af" target="_blank" rel="noopener noreferrer">
+    <a class="card" href="https://ozip.me/bL5jlyR?af" target="_blank" rel="noopener noreferrer" data-category="수납">
       <div class="img-wrap">
         <img src="products/rareraw-system000-standard-shelving-04_card_1.png" alt="레어로우 시스템000 스탠다드 선반 04" loading="lazy">
       </div>
@@ -205,7 +249,7 @@
         </div>
       </div>
     </a>
-    <a class="card" href="https://ozip.me/pAMCYNI?af" target="_blank" rel="noopener noreferrer">
+    <a class="card" href="https://ozip.me/pAMCYNI?af" target="_blank" rel="noopener noreferrer" data-category="소품">
       <div class="img-wrap">
         <img src="products/glass-block-wave-poster_card_1.png" alt="글라스블록 포스터 Glass Block Wave Type" loading="lazy">
       </div>
@@ -217,7 +261,7 @@
         </div>
       </div>
     </a>
-    <a class="card" href="https://ozip.me/Z9hYoPF?af" target="_blank" rel="noopener noreferrer">
+    <a class="card" href="https://ozip.me/Z9hYoPF?af" target="_blank" rel="noopener noreferrer" data-category="소품">
       <div class="img-wrap">
         <img src="products/ardenne-mirror-large_card_1.png" alt="아르덴 미러 라지 (L)" loading="lazy">
       </div>
@@ -229,7 +273,7 @@
         </div>
       </div>
     </a>
-    <a class="card" href="https://ozip.me/axDNCda?af" target="_blank" rel="noopener noreferrer">
+    <a class="card" href="https://ozip.me/axDNCda?af" target="_blank" rel="noopener noreferrer" data-category="의자">
       <div class="img-wrap">
         <img src="products/bear-hug-recliner-computer-chair_card_1.png" alt="베어허그 리클라이너 컴퓨터 의자 책상" loading="lazy">
       </div>
@@ -241,7 +285,7 @@
         </div>
       </div>
     </a>
-    <a class="card" href="https://ozip.me/yeWpzw1?af" target="_blank" rel="noopener noreferrer">
+    <a class="card" href="https://ozip.me/yeWpzw1?af" target="_blank" rel="noopener noreferrer" data-category="의자">
       <div class="img-wrap">
         <img src="products/century-ce550-desk-chair_card_1.png" alt="센추리 CE550 책상 학생 사무실 컴퓨터 의자 체어 인조가죽" loading="lazy">
       </div>
@@ -253,7 +297,7 @@
         </div>
       </div>
     </a>
-    <a class="card" href="https://ozip.me/FXtLzgm?af" target="_blank" rel="noopener noreferrer">
+    <a class="card" href="https://ozip.me/FXtLzgm?af" target="_blank" rel="noopener noreferrer" data-category="수납">
       <div class="img-wrap">
         <img src="products/stilla-walnut-midcentury-modular-tv-stand_card_1.png" alt="스틸라 원목 미드센츄리 모듈 거실장" loading="lazy">
       </div>
@@ -265,6 +309,45 @@
         </div>
       </div>
     </a>
+    <a class="card" href="https://ozip.me/4kdK8tC?af" target="_blank" rel="noopener noreferrer" data-category="소품">
+      <div class="img-wrap">
+        <img src="products/wood-room-divider-partition-screen_card_1.png" alt="우드 룸 디바이더 공간분리 가벽 파티션 스크린" loading="lazy">
+      </div>
+      <div class="info">
+        <p class="title">우드 룸 디바이더 공간분리 가벽 파티션 스크린</p>
+        <div class="cta">
+          <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+          <span>에서 구매하기</span>
+        </div>
+      </div>
+    </a>
+    <a class="card" href="https://ozip.me/LWyYQYw?af" target="_blank" rel="noopener noreferrer" data-category="조명">
+      <div class="img-wrap">
+        <img src="products/antique-floor-lamp-hanji-lighting_card_1.png" alt="앤틱 플로어 램프 한지조명 거실 인테리어 조명" loading="lazy">
+      </div>
+      <div class="info">
+        <p class="title">앤틱 플로어 램프 한지조명 거실 인테리어 조명</p>
+        <div class="cta">
+          <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+          <span>에서 구매하기</span>
+        </div>
+      </div>
+    </a>
   </div>
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    const cards = document.querySelectorAll('.card');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const filter = tab.dataset.filter;
+        cards.forEach(card => {
+          const match = filter === '전체' || card.dataset.category === filter;
+          card.classList.toggle('hidden', !match);
+        });
+      });
+    });
+  </script>
 </body>
 </html>

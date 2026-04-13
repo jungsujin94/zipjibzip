@@ -65,8 +65,9 @@ def build_card(p: dict) -> str:
     url = p.get("purchase_url", "#")
     img = p.get("image", "")
     title = p.get("title", "")
+    category = p.get("category", "")
     return f"""
-    <a class="card" href="{url}" target="_blank" rel="noopener noreferrer">
+    <a class="card" href="{url}" target="_blank" rel="noopener noreferrer" data-category="{category}">
       <div class="img-wrap">
         <img src="{img}" alt="{title}" loading="lazy">
       </div>
@@ -80,8 +81,21 @@ def build_card(p: dict) -> str:
     </a>"""
 
 
+def build_tabs(products: list[dict]) -> str:
+    seen = []
+    for p in products:
+        cat = p.get("category", "")
+        if cat and cat not in seen:
+            seen.append(cat)
+    tabs = '<button class="tab active" data-filter="전체">전체</button>'
+    for cat in seen:
+        tabs += f'\n    <button class="tab" data-filter="{cat}">{cat}</button>'
+    return tabs
+
+
 def generate_html(products: list[dict]) -> str:
     cards = "".join(build_card(p) for p in products)
+    tabs = build_tabs(products)
     return f"""<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -100,9 +114,48 @@ def generate_html(products: list[dict]) -> str:
 
     .logo {{
       display: block;
-      margin: 0 auto 40px;
+      margin: 0 auto 24px;
       max-height: 144px;
       width: auto;
+    }}
+
+    .disclaimer {{
+      text-align: center;
+      font-size: 0.78rem;
+      color: #aaa;
+      margin-bottom: 32px;
+    }}
+
+    .tabs {{
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: 1280px;
+      margin: 0 auto 36px;
+    }}
+
+    .tab {{
+      border: 1.5px solid #ddd;
+      background: #fff;
+      border-radius: 999px;
+      padding: 8px 20px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: #666;
+      cursor: pointer;
+      transition: all .18s ease;
+    }}
+
+    .tab:hover {{
+      border-color: #aaa;
+      color: #222;
+    }}
+
+    .tab.active {{
+      background: #1a1a1a;
+      border-color: #1a1a1a;
+      color: #fff;
     }}
 
     .grid {{
@@ -128,6 +181,10 @@ def generate_html(products: list[dict]) -> str:
     .card:hover {{
       transform: translateY(-5px);
       box-shadow: 0 10px 32px rgba(0, 0, 0, .14);
+    }}
+
+    .card.hidden {{
+      display: none;
     }}
 
     .img-wrap {{
@@ -180,20 +237,31 @@ def generate_html(products: list[dict]) -> str:
       height: 22px;
       width: auto;
     }}
-
-    .disclaimer {{
-      text-align: center;
-      font-size: 0.78rem;
-      color: #aaa;
-      margin-bottom: 40px;
-    }}
   </style>
 </head>
 <body>
   <img src="images/zipjibzip_nobg.png" alt="zipjibzip" class="logo">
   <p class="disclaimer">{DISCLAIMER}</p>
+  <div class="tabs">
+    {tabs}
+  </div>
   <div class="grid">{cards}
   </div>
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    const cards = document.querySelectorAll('.card');
+    tabs.forEach(tab => {{
+      tab.addEventListener('click', () => {{
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const filter = tab.dataset.filter;
+        cards.forEach(card => {{
+          const match = filter === '전체' || card.dataset.category === filter;
+          card.classList.toggle('hidden', !match);
+        }});
+      }});
+    }});
+  </script>
 </body>
 </html>"""
 
