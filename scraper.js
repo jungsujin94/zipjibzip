@@ -28,11 +28,25 @@ async function scrapeOhou(page) {
   try {
     await page.waitForSelector('h1, [class*="GoodsName"], [class*="goods-name"], [class*="ProductName"], [class*="product-name"]', { timeout: 20000 });
   } catch (e) {}
-  // 이미지 레이지 로딩 트리거를 위해 스크롤
-  await page.evaluate(() => window.scrollTo(0, 600));
-  await randomDelay(1200, 2000);
+  // 전체 페이지를 단계적으로 스크롤해 레이지 로딩 이미지 모두 트리거
+  await page.evaluate(async () => {
+    await new Promise(resolve => {
+      const totalHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+      const step = 400;
+      let current = 0;
+      const timer = setInterval(() => {
+        window.scrollTo(0, current);
+        current += step;
+        if (current >= totalHeight) {
+          clearInterval(timer);
+          resolve();
+        }
+      }, 150);
+    });
+  });
+  await randomDelay(1200, 1800);
   await page.evaluate(() => window.scrollTo(0, 0));
-  await randomDelay(800, 1200);
+  await randomDelay(600, 1000);
 
   return await page.evaluate(() => {
     const getText = (selectors) => {
@@ -158,32 +172,67 @@ async function scrapeOhou(page) {
       'table tr', '[class*="attribute"]'
     ]);
 
-    // ── 이미지: 상품 뷰 이미지만 수집 (상세설명/홍보 이미지 제외)
-    const productImgUrls = [];
-    const detailImgUrls  = [];
-    document.querySelectorAll('img').forEach(img => {
-      const src = img.src || img.dataset.src || img.dataset.lazySrc || '';
-      const isProductCDN = src.includes('ohousecdn.com') || src.includes('ohou.se');
-      const notIcon = !src.includes('.svg') && !src.includes('icon') && !src.includes('logo')
-                   && !src.includes('banner') && !src.includes('percent');
-      const goodSize = img.naturalWidth >= 400 || (!img.getAttribute('width') && src.includes('uploads'));
-      if (!src.startsWith('http') || !isProductCDN || !notIcon || !goodSize) return;
-      if (productImgUrls.includes(src) || detailImgUrls.includes(src)) return;
+    // ── 이미지: 제품 갤러리 컨테이너 우선 → fallback 전체 스캔
+    const seenBase = new Set();
+    const isValidProductImg = (img) => {
+      const src = img.src || img.dataset.src || img.dataset.lazySrc || img.dataset.original || img.getAttribute('data-lazy') || '';
+      if (!src.startsWith('http')) return null;
+      if (!src.includes('ohousecdn.com') && !src.includes('ohou.se')) return null;
+      if (src.includes('.svg') || src.includes('icon') || src.includes('logo')
+          || src.includes('banner') || src.includes('percent')
+          || src.includes('cards/snapshots') || src.includes('/cards/')
+          || src.includes('/community/')
+          || src.includes('/seller/') || src.includes('notice_images')) return null;
+      // CDN w= 파라미터가 256 이하면 관련상품 썸네일 → 제외
+      const wMatch = src.match(/[?&]w=(\d+)/);
+      if (wMatch && parseInt(wMatch[1]) <= 256) return null;
+      const goodSize = img.naturalWidth >= 200 || img.naturalHeight >= 200
+                    || (!img.getAttribute('width') && src.includes('uploads'));
+      if (!goodSize) return null;
+      const baseUrl = src.split('?')[0];
+      if (seenBase.has(baseUrl)) return null;
+      seenBase.add(baseUrl);
+      return src;
+    };
 
-      // productions/images/ 경로 = 대표 상품 뷰 이미지 (우선)
-      // admin 업로드나 v1- 로 시작하는 파일명 = 상세설명/홍보 이미지 (후순위)
-      const isProductShot = src.includes('/productions/images/');
-      const isDetailShot  = src.includes('/uploads/admin') || src.includes('/v2-development/');
-      if (isDetailShot) {
-        detailImgUrls.push(src);
-      } else if (isProductShot) {
-        productImgUrls.push(src);
-      } else {
-        productImgUrls.push(src); // 분류 불명 → 상품 쪽으로
-      }
-    });
-    // 상품 뷰 우선, 부족하면 상세 이미지로 보충 (최대 6장)
-    const imageUrls = [...productImgUrls, ...detailImgUrls].slice(0, 6);
+    // 1순위: 제품 이미지 갤러리 컨테이너 (관련상품 오염 없음)
+    const gallerySelectors = [
+      '[class*="GoodsImageGallery"]', '[class*="goods-image-gallery"]',
+      '[class*="ProductImageGallery"]', '[class*="ProductImages"]',
+      '[class*="ImageSwiper"]', '[class*="image-swiper"]',
+      '[class*="GoodsSwiper"]', '[class*="GoodsImageSlider"]',
+      '[class*="MainImage"]', '[class*="main-image"]',
+      '[class*="GoodsThumbs"]', '[class*="GoodsThumb"]',
+      '[class*="pdp-image"]', '[class*="PdpImage"]',
+    ];
+    const productImgUrls = [];
+    for (const sel of gallerySelectors) {
+      const container = document.querySelector(sel);
+      if (!container) continue;
+      container.querySelectorAll('img').forEach(img => {
+        const src = isValidProductImg(img);
+        if (src && !productImgUrls.includes(src)) productImgUrls.push(src);
+      });
+      if (productImgUrls.length >= 3) break; // 충분히 찾으면 중단
+    }
+
+    // 2순위: 전체 페이지 스캔 (갤러리에서 못 찾은 경우)
+    if (productImgUrls.length < 3) {
+      const detailImgUrls = [];
+      document.querySelectorAll('img').forEach(img => {
+        const src = isValidProductImg(img);
+        if (!src) return;
+        const isDetailShot = src.includes('/uploads/admin') || src.includes('/v2-development/');
+        if (isDetailShot) {
+          detailImgUrls.push(src);
+        } else {
+          productImgUrls.push(src);
+        }
+      });
+      productImgUrls.push(...detailImgUrls);
+    }
+
+    const imageUrls = productImgUrls.slice(0, 6);
 
     // ── 리뷰/평점
     const rating = getText([

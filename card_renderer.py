@@ -312,13 +312,18 @@ def sketch_effect(img_path: str) -> Image.Image:
     result = Image.fromarray(result_arr)
 
     # ── 6. 배경 제거: birefnet 신경망으로 제품만 누끼 ──────────────
-    cutout = rembg_remove(img, session=_get_rembg_session())
-    clean_a = cutout.split()[3]
-
-    result_rgba = result.convert("RGBA")
-    result_rgba.putalpha(clean_a)
-
-    return result_rgba
+    try:
+        cutout = rembg_remove(img, session=_get_rembg_session())
+        clean_a = cutout.split()[3]
+        result_rgba = result.convert("RGBA")
+        result_rgba.putalpha(clean_a)
+        return result_rgba
+    except Exception:
+        # OOM 등 실패 시: 배경 제거 없이 스케치 + 균일 반투명 알파로 fallback
+        result_rgba = result.convert("RGBA")
+        alpha = Image.new("L", result_rgba.size, 220)  # 약 86% 불투명
+        result_rgba.putalpha(alpha)
+        return result_rgba
 
 
 # ── 페이지 번호 (우상단 미니 필) ──────────────────────────────────
@@ -589,7 +594,6 @@ def render_stat(c: dict, prod_img_path: str = None) -> Image.Image:
     cx   = W // 2
 
     fi = F(HANDWRITE, 34)  # 인트로 라인 손글씨 감성
-    fn = F(BOLD, 148)
     fd = F(SERIF, 32)      # 통계 설명은 세리프체
     fq = F(BOLD, 38)
 
@@ -599,12 +603,23 @@ def render_stat(c: dict, prod_img_path: str = None) -> Image.Image:
     context   = strip_emoji(c.get("context", ""))
     desc_max  = W - PAD * 2 - 48
 
+    # 숫자 폰트: 텍스트 폭이 카드 너비를 넘지 않도록 자동 축소
+    num_max_w = W - PAD * 2 - 32
+    fn_size = 148
+    fn = F(BOLD, fn_size)
+    while fn_size > 48:
+        nb_test = draw.textbbox((0, 0), num, font=fn)
+        if (nb_test[2] - nb_test[0]) <= num_max_w:
+            break
+        fn_size -= 8
+        fn = F(BOLD, fn_size)
+
     show_intro = bool(intro)
     ib         = draw.textbbox((0, 0), intro, font=fi) if show_intro else (0, 0, 0, 0)
     intro_h    = (ib[3] - ib[1]) if show_intro else 0
     nb         = draw.textbbox((0, 0), num, font=fn)
     num_w      = nb[2] - nb[0]
-    num_h_safe = fn.size + 16
+    num_h_safe = fn_size + 16
     desc_lines  = balanced_wrap(stat_desc, fd, desc_max, draw)
     _dd = ImageDraw.Draw(Image.new("RGBA", (2, 2)))
     desc_text_h = sum(
