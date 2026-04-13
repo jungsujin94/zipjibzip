@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e ':*)",
+      "Bash(python pipeline.py \"https://store.ohou.se/goods/3378577\")",
+      "Bash(python -c ':*)",
+      "Bash(python pipeline.py \"https://store.ohou.se/goods/3825610\")",
+      "Bash(python pipeline.py \"https://store.ohou.se/goods/2839255\")",
+      "Bash(python pipeline.py \"https://ozip.me/53dQsz4?af\")"
+    ]
+  }
+}

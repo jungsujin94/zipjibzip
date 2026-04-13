@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npx playwright:*)",
+      "Bash(npm list:*)",
+      "Bash(python -c \"import selenium; print\\('selenium OK'\\)\")",
+      "Bash(python -c \"from selenium import webdriver; print\\('webdriver OK'\\)\")",
+      "Bash(chromedriver --version)",
+      "Bash(pip list:*)",
+      "Bash(python -c \"from selenium import webdriver; from selenium.webdriver.chrome.options import Options; print\\('chrome import OK'\\)\")",
+      "Bash(where chrome:*)",
+      "Bash(where chromium:*)",
+      "Read(//c/Program Files/Google/Chrome/Application/**)",
+      "Bash(python -c \"import playwright; print\\('playwright python installed'\\)\")",
+      "Bash(python -c \"from PIL import Image; print\\('Pillow OK'\\)\")",
+      "Bash(pip show:*)",
+      "Bash(python -c \"import PIL; print\\(PIL.__version__\\)\")",
+      "Bash(python -c \"import openai; print\\(openai.__version__\\)\")",
+      "Bash(python -c \"import dotenv; print\\('dotenv OK'\\)\")",
+      "Bash(python card_renderer.py)",
+      "Bash(ls -la /c/cardnews/output/*.png)",
+      "Bash(npm install:*)",
+      "Bash(python pipeline.py \"https://store.ohou.se/goods/1028964\")",
+      "Bash(python:*)"
+    ]
+  }
+}
