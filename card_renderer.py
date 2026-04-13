@@ -524,8 +524,20 @@ def render_list(c: dict, prod_img_path: str = None) -> Image.Image:
     for i, item in enumerate(items):
         iy  = start_y + i * (item_h + 8)
         num = item.get("num", f"0{i+1}")
+        tx  = PAD + 74
+        tw  = W - PAD - tx - 16
 
-        # 번호 원
+        # 제목·설명 높이 미리 계산 (수직 중앙 정렬용)
+        title_str = item.get("title", "")
+        desc_str  = item.get("desc", "")
+        title_h   = text_height(title_str, ft, tw, draw, line_gap=4)
+        desc_b    = draw.textbbox((0, 0), desc_str, font=fd)
+        desc_h_1  = desc_b[3] - desc_b[1]   # 단일 줄 높이
+        gap       = 8
+        block_h   = title_h + gap + desc_h_1 + 10  # pill 패딩 포함
+        text_top  = iy + (item_h - block_h) // 2
+
+        # 번호 원 — 텍스트 블록 중앙에 맞춤
         cx_ = PAD + 26
         cy_ = iy + item_h // 2
         r_  = 24
@@ -537,11 +549,22 @@ def render_list(c: dict, prod_img_path: str = None) -> Image.Image:
                    cy_ - (nb_[3]-nb_[1])//2 - 1),
                   num, font=fn_, fill=C["coral"])
 
-        tx = PAD + 74
-        put(draw, item.get("title", ""), ft, C["text"],
-            tx, iy + 12, W - PAD - tx - 16, line_gap=4)
-        put(draw, item.get("desc", ""),  fd, C["text_muted"],
-            tx, iy + 54, W - PAD - tx - 16, line_gap=2)
+        # 제목
+        put(draw, title_str, ft, C["text"],
+            tx, text_top, tw, line_gap=4)
+
+        # 설명 — pill 배경 + 진한 텍스트
+        desc_y = text_top + title_h + gap
+        desc_w = draw.textbbox((0, 0), desc_str, font=fd)[2] - draw.textbbox((0, 0), desc_str, font=fd)[0]
+        pill_pad_x, pill_pad_y = 14, 5
+        pill_x1 = tx - pill_pad_x
+        pill_y1 = desc_y - pill_pad_y
+        pill_x2 = tx + min(desc_w, tw) + pill_pad_x
+        pill_y2 = desc_y + desc_h_1 + pill_pad_y
+        rrect(draw, [pill_x1, pill_y1, pill_x2, pill_y2],
+              radius=16, fill=C["stone"])
+        put(draw, desc_str, fd, C["text_mid"],
+            tx, desc_y, tw, line_gap=2)
 
         if i < len(items) - 1:
             thin_rule(draw, iy + item_h + 2, x0=PAD + 60)

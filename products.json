@@ -103,5 +103,33 @@
     "image": "products/antique-floor-lamp-hanji-lighting_card_1.png",
     "purchase_url": "https://ozip.me/LWyYQYw?af",
     "category": "조명"
+  },
+  {
+    "slug": "analog-weather-station-aluminum-bearcraft",
+    "title": "아날로그 웨더스테이션 알루미늄 쇠테리어 온도 기압 습도계",
+    "image": "products/analog-weather-station-aluminum-bearcraft_card_1.png",
+    "purchase_url": "https://ozip.me/Z7zUUEt?af",
+    "category": "소품"
+  },
+  {
+    "slug": "radata-hotel-towel-10p-200g",
+    "title": "국내제작 코마사 40수 200g 고중량 호텔수건 10장",
+    "image": "products/radata-hotel-towel-10p-200g_card_1.png",
+    "purchase_url": "https://ozip.me/VXEQ9bS",
+    "category": "소품"
+  },
+  {
+    "slug": "wave-bracket-wall-light",
+    "title": "Wave Bracket 웨이브 벽등",
+    "image": "products/wave-bracket-wall-light_card_1.png",
+    "purchase_url": "https://ozip.me/6rd3eDw?af",
+    "category": "조명"
+  },
+  {
+    "slug": "nordic-single-sofa-fabric-chair",
+    "title": "북유럽 싱글 소파 패브릭 체어 1인 안락의자",
+    "image": "products/nordic-single-sofa-fabric-chair_card_1.png",
+    "purchase_url": "https://ozip.me/Wd1SQGc?af",
+    "category": "의자"
   }
 ]
