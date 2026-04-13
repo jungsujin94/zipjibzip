@@ -182,7 +182,8 @@ async function scrapeOhou(page) {
           || src.includes('banner') || src.includes('percent')
           || src.includes('cards/snapshots') || src.includes('/cards/')
           || src.includes('/community/')
-          || src.includes('/seller/') || src.includes('notice_images')) return null;
+          || src.includes('/seller/') || src.includes('notice_images')
+          || src.includes('video-service')) return null;
       // CDN w= 파라미터가 256 이하면 관련상품 썸네일 → 제외
       const wMatch = src.match(/[?&]w=(\d+)/);
       if (wMatch && parseInt(wMatch[1]) <= 256) return null;

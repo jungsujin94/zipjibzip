@@ -148,7 +148,11 @@ def _promote_best_card1_image(paths: list) -> list:
     return paths
 
 
-def run(url: str):
+def run(url: str, force_img_idx: int = None):
+    """
+    force_img_idx: 0-based. 지정 시 birefnet 선별을 건너뛰고 해당 인덱스 이미지를 card1에 사용.
+                  캐시된 content JSON이 있으면 AI 추출도 생략.
+    """
     print("\n" + "=" * 60, flush=True)
     print("  카드뉴스 생성 시작", flush=True)
     print("=" * 60 + "\n", flush=True)
@@ -173,20 +177,46 @@ def run(url: str):
 
     # 4. 제품 이미지 여러 장 다운로드 (최대 5장)
     product_image_paths = download_product_images(scraped_data, url, max_images=5)
-    # 카드 1용 최적 이미지 선별: 배경 제거 후 전경 비율이 가장 높은 이미지를 맨 앞으로
-    if len(product_image_paths) > 1:
+
+    if force_img_idx is not None:
+        # retry N: birefnet 건너뛰고 지정 인덱스를 card1 이미지로
+        idx = min(force_img_idx, len(product_image_paths) - 1)
+        if idx != 0:
+            product_image_paths[0], product_image_paths[idx] = \
+                product_image_paths[idx], product_image_paths[0]
+        print(f"[pipeline] 카드1 이미지: {idx+1}번 강제 선택 (--img {idx+1})", flush=True)
+    elif len(product_image_paths) > 1:
         product_image_paths = _promote_best_card1_image(product_image_paths)
 
-    # 5. Claude로 카드 콘텐츠 생성
-    print(f"[pipeline] Claude로 USP 분석 중...", flush=True)
-    card_content = extract_card_content(scraped_data, api_key)
-    card_content = validate_content(card_content, scraped_data)
+    # 5. Claude로 카드 콘텐츠 생성 (캐시 있으면 재사용)
+    slug_guess = scraped_data.get("name", "")
+    cached_content = None
+    if force_img_idx is not None:
+        # 같은 URL의 캐시 파일 탐색 (output 폴더의 _content.json 중 product_url 일치)
+        for fname in os.listdir(OUTPUT_DIR):
+            if fname.endswith("_content.json"):
+                try:
+                    with open(os.path.join(OUTPUT_DIR, fname), encoding="utf-8") as f:
+                        cached = json.load(f)
+                    if cached.get("product_url") == original_url:
+                        cached_content = cached["card_content"]
+                        print(f"[pipeline] 캐시된 콘텐츠 재사용: {fname}", flush=True)
+                        break
+                except Exception:
+                    pass
+
+    if cached_content:
+        card_content = cached_content
+    else:
+        print(f"[pipeline] Claude로 USP 분석 중...", flush=True)
+        card_content = extract_card_content(scraped_data, api_key)
+        card_content = validate_content(card_content, scraped_data)
 
     # 6. 카드뉴스 PNG 렌더링
     print(f"[pipeline] 카드뉴스 이미지 생성 중...", flush=True)
     output_paths = render_all_cards(card_content, OUTPUT_DIR, product_image_paths)
 
-    # 7. 카드 콘텐츠 JSON 저장 (retry_card1 용)
+    # 7. 카드 콘텐츠 JSON 저장
     slug = card_content.get("product_slug", "product")
     content_path = os.path.join(OUTPUT_DIR, f"{slug}_content.json")
     with open(content_path, "w", encoding="utf-8") as f:
@@ -196,7 +226,7 @@ def run(url: str):
     # 8. 인스타 캡션 txt 저장
     caption_path = _write_caption(card_content, original_url, OUTPUT_DIR)
 
-    # 8. 임시 이미지 파일 정리
+    # 9. 임시 이미지 파일 정리
     for p in product_image_paths:
         if os.path.exists(p):
             os.unlink(p)
@@ -259,14 +289,16 @@ def _write_caption(card_content: dict, product_url: str, output_dir: str) -> str
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("사용법: python pipeline.py [URL]")
-        print("예시: python pipeline.py https://www.coupang.com/vp/products/XXXXX")
-        sys.exit(1)
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("url", help="제품 URL")
+    parser.add_argument("--img", type=int, default=None,
+                        help="card1에 쓸 이미지 번호 (1-based). retry N 용도.")
+    args = parser.parse_args()
 
-    url = sys.argv[1].strip()
+    force_idx = (args.img - 1) if args.img is not None else None
     try:
-        run(url)
+        run(args.url.strip(), force_img_idx=force_idx)
     except Exception as e:
         print(f"\n오류 발생: {e}", file=sys.stderr)
         sys.exit(1)

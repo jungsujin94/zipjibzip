@@ -30,7 +30,11 @@
       "Bash(python -)",
       "Bash(2>&1)",
       "Bash(python pipeline.py \"https://ozip.me/6EGDCo9?af\")",
-      "Bash(python pipeline.py \"https://ozip.me/gLxCMbW?af\")"
+      "Bash(python pipeline.py \"https://ozip.me/gLxCMbW?af\")",
+      "Bash(python pipeline.py \"https://ozip.me/jDRZQiM?af\")",
+      "Bash(python pipeline.py \"https://ozip.me/rPUqyET?af\")",
+      "Bash(node:*)",
+      "Bash(python:*)"
     ]
   }
 }

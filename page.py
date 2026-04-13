@@ -66,13 +66,18 @@ def build_card(p: dict) -> str:
     img = p.get("image", "")
     title = p.get("title", "")
     category = p.get("category", "")
+    price = p.get("price", "")
+    price_html = f'<p class="price">{price}</p>' if price else ""
     return f"""
     <a class="card" href="{url}" target="_blank" rel="noopener noreferrer" data-category="{category}">
       <div class="img-wrap">
         <img src="{img}" alt="{title}" loading="lazy">
       </div>
       <div class="info">
-        <p class="title">{title}</p>
+        <div class="title-group">
+          <p class="title">{title}</p>
+          {price_html}
+        </div>
         <div class="cta">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
           <span>에서 구매하기</span>
@@ -215,10 +220,22 @@ def generate_html(products: list[dict]) -> str:
       justify-content: space-between;
     }}
 
+    .title-group {{
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }}
+
     .title {{
       font-size: 1rem;
       font-weight: 600;
       line-height: 1.5;
+    }}
+
+    .price {{
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #e05c2a;
     }}
 
     .cta {{
