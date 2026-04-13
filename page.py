@@ -67,9 +67,10 @@ def build_card(p: dict) -> str:
     title = p.get("title", "")
     category = p.get("category", "")
     price = p.get("price", "")
+    price_num = int(price.replace(",", "").replace("원", "")) if price else 0
     price_html = f'<p class="price">{price}</p>' if price else ""
     return f"""
-    <a class="card" href="{url}" target="_blank" rel="noopener noreferrer" data-category="{category}">
+    <a class="card" href="{url}" target="_blank" rel="noopener noreferrer" data-category="{category}" data-price="{price_num}">
       <div class="img-wrap">
         <img src="{img}" alt="{title}" loading="lazy">
       </div>
@@ -131,13 +132,20 @@ def generate_html(products: list[dict]) -> str:
       margin-bottom: 32px;
     }}
 
-    .tabs {{
+    .toolbar {{
       display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 8px;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
       max-width: 1280px;
       margin: 0 auto 36px;
+    }}
+
+    .tabs {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      flex: 1;
     }}
 
     .tab {{
@@ -158,6 +166,37 @@ def generate_html(products: list[dict]) -> str:
     }}
 
     .tab.active {{
+      background: #1a1a1a;
+      border-color: #1a1a1a;
+      color: #fff;
+    }}
+
+    .sort-controls {{
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex-shrink: 0;
+    }}
+
+    .sort-btn {{
+      border: 1.5px solid #ddd;
+      background: #fff;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: #666;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .18s ease;
+    }}
+
+    .sort-btn:hover {{
+      border-color: #aaa;
+      color: #222;
+    }}
+
+    .sort-btn.active {{
       background: #1a1a1a;
       border-color: #1a1a1a;
       color: #fff;
@@ -259,23 +298,69 @@ def generate_html(products: list[dict]) -> str:
 <body>
   <img src="images/zipjibzip_nobg.png" alt="zipjibzip" class="logo">
   <p class="disclaimer">{DISCLAIMER}</p>
-  <div class="tabs">
-    {tabs}
+  <div class="toolbar">
+    <div class="tabs">
+      {tabs}
+    </div>
+    <div class="sort-controls">
+      <button class="sort-btn" data-sort="asc">가격 낮은순 ↑</button>
+      <button class="sort-btn" data-sort="desc">가격 높은순 ↓</button>
+    </div>
   </div>
   <div class="grid">{cards}
   </div>
   <script>
     const tabs = document.querySelectorAll('.tab');
-    const cards = document.querySelectorAll('.card');
+    const sortBtns = document.querySelectorAll('.sort-btn');
+    const grid = document.querySelector('.grid');
+    let currentFilter = '전체';
+    let currentSort = null;
+
+    function getCards() {{
+      return Array.from(grid.querySelectorAll('.card'));
+    }}
+
+    function applyFilterAndSort() {{
+      const cards = getCards();
+      // filter visibility
+      cards.forEach(card => {{
+        const match = currentFilter === '전체' || card.dataset.category === currentFilter;
+        card.classList.toggle('hidden', !match);
+      }});
+      // sort
+      if (currentSort) {{
+        const visible = cards.filter(c => !c.classList.contains('hidden'));
+        const hidden = cards.filter(c => c.classList.contains('hidden'));
+        visible.sort((a, b) => {{
+          const pa = parseInt(a.dataset.price) || 0;
+          const pb = parseInt(b.dataset.price) || 0;
+          return currentSort === 'asc' ? pa - pb : pb - pa;
+        }});
+        [...visible, ...hidden].forEach(c => grid.appendChild(c));
+      }}
+    }}
+
     tabs.forEach(tab => {{
       tab.addEventListener('click', () => {{
         tabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
-        const filter = tab.dataset.filter;
-        cards.forEach(card => {{
-          const match = filter === '전체' || card.dataset.category === filter;
-          card.classList.toggle('hidden', !match);
-        }});
+        currentFilter = tab.dataset.filter;
+        applyFilterAndSort();
+      }});
+    }});
+
+    sortBtns.forEach(btn => {{
+      btn.addEventListener('click', () => {{
+        if (currentSort === btn.dataset.sort) {{
+          // toggle off
+          btn.classList.remove('active');
+          currentSort = null;
+        }} else {{
+          sortBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentSort = btn.dataset.sort;
+        }}
+        applyFilterAndSort();
       }});
     }});
   </script>

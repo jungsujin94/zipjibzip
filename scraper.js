@@ -184,6 +184,8 @@ async function scrapeOhou(page) {
           || src.includes('/community/')
           || src.includes('/seller/') || src.includes('notice_images')
           || src.includes('video-service')) return null;
+      // prs.ohousecdn.com/apne2/any/v1-XXXXX (uploads/ 없음) → 관련상품/리뷰 이미지
+      if (src.includes('ohousecdn.com') && src.includes('/any/v1-') && !src.includes('/uploads/')) return null;
       // CDN w= 파라미터가 256 이하면 관련상품 썸네일 → 제외
       const wMatch = src.match(/[?&]w=(\d+)/);
       if (wMatch && parseInt(wMatch[1]) <= 256) return null;
