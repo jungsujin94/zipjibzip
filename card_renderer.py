@@ -576,8 +576,9 @@ def render_stat(c: dict, prod_img_path: str = None) -> Image.Image:
     context   = strip_emoji(c.get("context", ""))
     desc_max  = W - PAD * 2 - 48
 
-    ib         = draw.textbbox((0, 0), intro, font=fi)
-    intro_h    = ib[3] - ib[1]
+    show_intro = bool(intro)
+    ib         = draw.textbbox((0, 0), intro, font=fi) if show_intro else (0, 0, 0, 0)
+    intro_h    = (ib[3] - ib[1]) if show_intro else 0
     nb         = draw.textbbox((0, 0), num, font=fn)
     num_w      = nb[2] - nb[0]
     num_h_safe = fn.size + 16
@@ -590,15 +591,17 @@ def render_stat(c: dict, prod_img_path: str = None) -> Image.Image:
     desc_card_h = desc_text_h + 52
     ctx_h       = text_height(context, fq, W - PAD*2, draw, line_gap=8)
 
-    total_h = (intro_h + 36
+    intro_block = (intro_h + 36) if show_intro else 0
+    total_h = (intro_block
                + num_h_safe + 14 + 52
                + desc_card_h + 44 + ctx_h)
     y = max((H - total_h) // 2, PAD + 32)
 
-    # 인트로
-    iw = ib[2] - ib[0]
-    draw.text((cx - iw//2, y), intro, font=fi, fill=C["text_muted"])
-    y += intro_h + 36
+    # 인트로 (있을 때만)
+    if show_intro:
+        iw = ib[2] - ib[0]
+        draw.text((cx - iw//2, y), intro, font=fi, fill=C["text_muted"])
+        y += intro_h + 36
 
     # 숫자
     draw.text((cx - num_w//2, y), num, font=fn, fill=C["ink"])
@@ -714,19 +717,18 @@ def render_solution(c: dict, prod_img_path: str = None,
         fy   = badge_y + 28
         ft_  = F(BOLD, 30)
         fd_  = F(SERIF, 25)
+        feat_x_off = int(draw.textbbox((0, 0), "· ", font=ft_)[2])
+        feat_text_w = text_w - feat_x_off
         for feat in feats:
             title = feat.get("title", "")
             desc  = feat.get("desc", "")
-            fb_   = draw.textbbox((0, 0), "·", font=ft_)
             draw.text((PAD, fy), "·", font=ft_, fill=C["coral"])
-            bw_   = fb_[2] - fb_[0]
-            put(draw, title, ft_, C["white"],
-                PAD + bw_ + 10, fy, text_w - bw_ - 10)
-            fy_ = fy + (draw.textbbox((0,0),title,font=ft_)[3]-
-                        draw.textbbox((0,0),title,font=ft_)[1]) + 4
-            put(draw, desc, fd_, (190, 185, 175),
-                PAD + bw_ + 10, fy_, text_w - bw_ - 10)
-            fy += 78
+            title_h = put(draw, title, ft_, C["white"],
+                          PAD + feat_x_off, fy, feat_text_w)
+            fy_ = fy + title_h + 4
+            desc_h = put(draw, desc, fd_, (190, 185, 175),
+                         PAD + feat_x_off, fy_, feat_text_w)
+            fy += title_h + 4 + desc_h + 14  # 동적 간격
         badge_y = fy + 8
 
     # 할인율
@@ -740,6 +742,7 @@ def render_solution(c: dict, prod_img_path: str = None,
     # 가격
     price = c.get("price", "")
     fp    = F(BOLD, 84)
+    price_y = min(price_y, H - fp.size - PAD)  # 카드 하단 이탈 방지
     draw.text((PAD, price_y), price, font=fp, fill=C["white"])
 
     indicator(img, 5)

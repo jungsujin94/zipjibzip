@@ -77,6 +77,17 @@ def download_product_images(scraped_data: dict, referer_url: str,
     if not image_urls:
         return []
 
+    # 쿼리 파라미터 제거 후 중복 URL 제거 (같은 이미지 다른 해상도 중복 방지)
+    from urllib.parse import urlparse
+    seen_bases = set()
+    deduped_urls = []
+    for u in image_urls:
+        base = urlparse(u)._replace(query="", fragment="").geturl()
+        if base not in seen_bases:
+            seen_bases.add(base)
+            deduped_urls.append(u)
+    image_urls = deduped_urls
+
     headers = {
         "Referer": referer_url,
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
@@ -175,7 +186,14 @@ def run(url: str):
     print(f"[pipeline] 카드뉴스 이미지 생성 중...", flush=True)
     output_paths = render_all_cards(card_content, OUTPUT_DIR, product_image_paths)
 
-    # 7. 인스타 캡션 txt 저장
+    # 7. 카드 콘텐츠 JSON 저장 (retry_card1 용)
+    slug = card_content.get("product_slug", "product")
+    content_path = os.path.join(OUTPUT_DIR, f"{slug}_content.json")
+    with open(content_path, "w", encoding="utf-8") as f:
+        json.dump({"card_content": card_content, "product_url": original_url,
+                   "scraped_name": scraped_data.get("name", "")}, f, ensure_ascii=False, indent=2)
+
+    # 8. 인스타 캡션 txt 저장
     caption_path = _write_caption(card_content, original_url, OUTPUT_DIR)
 
     # 8. 임시 이미지 파일 정리
@@ -213,7 +231,7 @@ def _write_caption(card_content: dict, product_url: str, output_dir: str) -> str
     cap = card_content.get("caption", {})
     hook    = cap.get("hook_line", "")
     lines   = cap.get("body_lines", [])
-    tags    = cap.get("hashtags", [])
+    tags    = cap.get("hashtags", [])[:5]
     slug    = card_content.get("product_slug", "product")
 
     DISCLAIMER = "이 포스팅은 오늘의집 큐레이터 활동의 일환으로, 구매시 이에 따른 일정액의 수수료를 제공받습니다."
