@@ -158,17 +158,38 @@ async function scrapePrice(page, site) {
       if (site === 'ohou') await randomDelay(800, 1200);
 
       const price = await scrapePrice(page, site);
-      products[i].price = price;
-      console.log(`[${i + 1}/${products.length}] ${price || '(가격 없음)'} — ${p.title}`);
+      products[i]['ohouse price'] = price;
+      delete products[i].price; // remove legacy field
+      console.log(`[${i + 1}/${products.length}] 오늘의집 ${price || '(가격 없음)'} — ${p.title}`);
     } catch (err) {
       console.error(`[${i + 1}/${products.length}] ERROR: ${err.message} — ${p.title}`);
-      products[i].price = '';
+      products[i]['ohouse price'] = '';
     } finally {
       await page.close();
     }
 
+    // 쿠팡 가격 스크래핑 (coupang_url이 있는 경우)
+    const coupangUrl = products[i].coupang_url;
+    if (coupangUrl) {
+      const cPage = await context.newPage();
+      try {
+        await cPage.goto(coupangUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+        await randomDelay(1500, 2500);
+        const cSite = detectSite(cPage.url());
+        const cPrice = cSite === 'coupang' ? await scrapePrice(cPage, 'coupang') : '';
+        products[i]['coupang price'] = cPrice;
+        console.log(`  └ 쿠팡 ${cPrice || '(가격 없음)'}`);
+      } catch (err) {
+        console.error(`  └ 쿠팡 ERROR: ${err.message}`);
+        products[i]['coupang price'] = '';
+      } finally {
+        await cPage.close();
+      }
+      await randomDelay(1000, 2000);
+    }
+
     // 서버 부하 방지
-    if (i < products.length - 1) await randomDelay(1000, 2000);
+    if (i < products.length - 1) await randomDelay(800, 1500);
   }
 
   await browser.close();

@@ -19,7 +19,8 @@ PRODUCTS_DIR = Path("products")
 PRODUCTS_JSON = Path("products.json")
 OUTPUT_HTML = Path("index.html")
 CATALOG_TITLE = "zipjibzip picks"
-DISCLAIMER = "이 포스팅은 오늘의집 큐레이터 활동의 일환으로, 구매시 이에 따른 일정액의 수수료를 제공받습니다."
+DISCLAIMER_OHOUSE = "이 포스팅은 오늘의집 큐레이터 활동의 일환으로, 구매시 이에 따른 일정액의 수수료를 제공받습니다."
+DISCLAIMER_COUPANG = "이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다."
 
 
 def slug_to_title(slug: str) -> str:
@@ -40,6 +41,10 @@ def discover_products() -> list[dict]:
                 "title": slug_to_title(slug),
                 "image": f"products/{img.name}",
                 "purchase_url": "https://example.com",
+                "coupang_url": "",
+                "category": "",
+                "ohouse price": "",
+                "coupang price": "",
             }
         )
     return products
@@ -62,29 +67,57 @@ def load_products(regen: bool) -> list[dict]:
 
 
 def build_card(p: dict) -> str:
-    url = p.get("purchase_url", "#")
-    img = p.get("image", "")
-    title = p.get("title", "")
-    category = p.get("category", "")
-    price = p.get("price", "")
-    price_num = int(price.replace(",", "").replace("원", "")) if price else 0
-    price_html = f'<p class="price">{price}</p>' if price else ""
+    ohouse_url  = p.get("purchase_url", "#")
+    img         = p.get("image", "")
+    title       = p.get("title", "")
+    category    = p.get("category", "")
+    coupang_url = p.get("coupang_url", "")
+    ohouse_price  = p.get("ohouse price") or p.get("price", "")
+    coupang_price = p.get("coupang price", "")
+
+    price_num = int(ohouse_price.replace(",", "").replace("원", "")) if ohouse_price else 0
+    has_coupang = bool(coupang_url)
+
+    if has_coupang:
+        op_html = (f'<div class="price-row">'
+                   f'<span class="platform-tag ohouse-tag">오늘의집</span>'
+                   f'<span class="price">{ohouse_price}</span></div>') if ohouse_price else ""
+        cp_html = (f'<div class="price-row">'
+                   f'<span class="platform-tag coupang-tag">쿠팡</span>'
+                   f'<span class="price">{coupang_price}</span></div>') if coupang_price else ""
+        prices_html = f'<div class="prices">{op_html}{cp_html}</div>'
+        cta_html = f"""<div class="cta-group">
+          <a class="cta cta-ohouse" href="{ohouse_url}" target="_blank" rel="noopener noreferrer">
+            <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+            <span>오늘의집</span>
+          </a>
+          <a class="cta cta-coupang" href="{coupang_url}" target="_blank" rel="noopener noreferrer">
+            <img src="images/coupang%20logo.png" alt="쿠팡" class="cta-logo">
+            <span>쿠팡</span>
+          </a>
+        </div>"""
+    else:
+        prices_html = f'<p class="price">{ohouse_price}</p>' if ohouse_price else ""
+        cta_html = f"""<a class="cta cta-ohouse" href="{ohouse_url}" target="_blank" rel="noopener noreferrer">
+          <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+          <span>에서 구매하기</span>
+        </a>"""
+
     return f"""
-    <a class="card" href="{url}" target="_blank" rel="noopener noreferrer" data-category="{category}" data-price="{price_num}">
-      <div class="img-wrap">
-        <img src="{img}" alt="{title}" loading="lazy">
-      </div>
+    <div class="card" data-category="{category}" data-price="{price_num}">
+      <a class="img-link" href="{ohouse_url}" target="_blank" rel="noopener noreferrer">
+        <div class="img-wrap">
+          <img src="{img}" alt="{title}" loading="lazy">
+        </div>
+      </a>
       <div class="info">
         <div class="title-group">
           <p class="title">{title}</p>
-          {price_html}
+          {prices_html}
         </div>
-        <div class="cta">
-          <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
-        </div>
+        {cta_html}
       </div>
-    </a>"""
+    </div>"""
 
 
 def build_tabs(products: list[dict]) -> str:
@@ -271,33 +304,96 @@ def generate_html(products: list[dict]) -> str:
       line-height: 1.5;
     }}
 
+    .img-link {{
+      display: block;
+      text-decoration: none;
+    }}
+
+    .prices {{
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-top: 2px;
+    }}
+
+    .price-row {{
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }}
+
+    .platform-tag {{
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      letter-spacing: 0.01em;
+    }}
+
+    .ohouse-tag {{
+      background: #e6f2e6;
+      color: #2a7a2a;
+    }}
+
+    .coupang-tag {{
+      background: #fde8e8;
+      color: #c0392b;
+    }}
+
     .price {{
       font-size: 0.92rem;
       font-weight: 700;
-      color: #e05c2a;
+      color: #1a1a1a;
+    }}
+
+    .cta-group {{
+      display: flex;
+      gap: 8px;
     }}
 
     .cta {{
       display: flex;
       align-items: center;
-      gap: 7px;
-      background: #f5f4f0;
+      justify-content: center;
+      gap: 6px;
       border-radius: 10px;
       padding: 10px 14px;
-      font-size: 0.85rem;
-      font-weight: 500;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background .18s ease;
+      flex: 1;
+    }}
+
+    .cta-ohouse {{
+      background: #f0ede8;
       color: #444;
     }}
 
+    .cta-ohouse:hover {{
+      background: #e5e0d8;
+    }}
+
+    .cta-coupang {{
+      background: #fff0f0;
+      color: #c0392b;
+    }}
+
+    .cta-coupang:hover {{
+      background: #ffe0e0;
+    }}
+
     .cta-logo {{
-      height: 22px;
+      height: 20px;
       width: auto;
     }}
   </style>
 </head>
 <body>
   <img src="images/zipjibzip_nobg.png" alt="zipjibzip" class="logo">
-  <p class="disclaimer">{DISCLAIMER}</p>
+  <p class="disclaimer">{DISCLAIMER_OHOUSE}</p>
+  <p class="disclaimer">{DISCLAIMER_COUPANG}</p>
   <div class="toolbar">
     <div class="tabs">
       {tabs}
