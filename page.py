@@ -335,13 +335,13 @@ def generate_html(products: list[dict]) -> str:
 
     .cta-ohouse {{
       background: #f8f8f8;
-      border: 2px solid #4DAAED;
+      border: 1.5px solid #96C8F0;
       color: #1a1a1a;
     }}
 
     .cta-coupang {{
       background: #f8f8f8;
-      border: 2px solid #F5821F;
+      border: 1.5px solid #F5B080;
       color: #1a1a1a;
     }}
 
