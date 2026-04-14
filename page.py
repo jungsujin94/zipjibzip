@@ -83,18 +83,27 @@ def build_card(p: dict) -> str:
     if has_coupang:
         cta_html = f"""<div class="cta-group">
           <a class="cta cta-ohouse" href="{ohouse_url}" target="_blank" rel="noopener noreferrer">
-            <span class="cta-platform">오늘의집</span>
+            <div class="cta-top">
+              <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
             <span class="cta-price">{ohouse_price or '—'}</span>
           </a>
           <a class="cta cta-coupang" href="{coupang_url}" target="_blank" rel="noopener noreferrer">
-            <span class="cta-platform">coupang</span>
+            <div class="cta-top">
+              <img src="images/coupang%20logo.png" alt="쿠팡" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
             <span class="cta-price">{coupang_price or '—'}</span>
           </a>
         </div>"""
     else:
         cta_html = f"""<div class="cta-group">
           <a class="cta cta-ohouse" href="{ohouse_url}" target="_blank" rel="noopener noreferrer">
-            <span class="cta-platform">오늘의집</span>
+            <div class="cta-top">
+              <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
             <span class="cta-price">{ohouse_price or '—'}</span>
           </a>
         </div>"""
@@ -325,22 +334,36 @@ def generate_html(products: list[dict]) -> str:
     }}
 
     .cta-ohouse {{
-      background: #c8c5c0;
+      background: #e8e5e1;
       color: #1a1a1a;
     }}
 
     .cta-coupang {{
-      background: #f9b8cb;
+      background: #fce4ee;
       color: #1a1a1a;
     }}
 
-    .cta-platform {{
-      font-size: 0.8rem;
+    .cta-top {{
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }}
+
+    .cta-logo {{
+      height: 18px;
+      width: auto;
+      display: block;
+    }}
+
+    .cta-arrow {{
+      font-size: 0.85rem;
       font-weight: 700;
+      color: #333;
+      line-height: 1;
     }}
 
     .cta-price {{
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       font-weight: 700;
     }}
   </style>
