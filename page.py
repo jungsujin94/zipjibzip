@@ -81,29 +81,23 @@ def build_card(p: dict) -> str:
     has_coupang = bool(coupang_url)
 
     if has_coupang:
-        op_html = (f'<div class="price-row">'
-                   f'<span class="platform-tag ohouse-tag">오늘의집</span>'
-                   f'<span class="price">{ohouse_price}</span></div>') if ohouse_price else ""
-        cp_html = (f'<div class="price-row">'
-                   f'<span class="platform-tag coupang-tag">쿠팡</span>'
-                   f'<span class="price">{coupang_price}</span></div>') if coupang_price else ""
-        prices_html = f'<div class="prices">{op_html}{cp_html}</div>'
         cta_html = f"""<div class="cta-group">
           <a class="cta cta-ohouse" href="{ohouse_url}" target="_blank" rel="noopener noreferrer">
-            <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-            <span class="cta-arrow">↗</span>
+            <span class="cta-platform">오늘의집</span>
+            <span class="cta-price">{ohouse_price or '—'}</span>
           </a>
           <a class="cta cta-coupang" href="{coupang_url}" target="_blank" rel="noopener noreferrer">
-            <img src="images/coupang%20logo.png" alt="쿠팡" class="cta-logo">
-            <span class="cta-arrow">↗</span>
+            <span class="cta-platform">coupang</span>
+            <span class="cta-price">{coupang_price or '—'}</span>
           </a>
         </div>"""
     else:
-        prices_html = f'<p class="price">{ohouse_price}</p>' if ohouse_price else ""
-        cta_html = f"""<a class="cta cta-ohouse cta-solo" href="{ohouse_url}" target="_blank" rel="noopener noreferrer">
-          <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span class="cta-arrow">↗</span>
-        </a>"""
+        cta_html = f"""<div class="cta-group">
+          <a class="cta cta-ohouse" href="{ohouse_url}" target="_blank" rel="noopener noreferrer">
+            <span class="cta-platform">오늘의집</span>
+            <span class="cta-price">{ohouse_price or '—'}</span>
+          </a>
+        </div>"""
 
     return f"""
     <div class="card" data-category="{category}" data-price="{price_num}">
@@ -113,10 +107,7 @@ def build_card(p: dict) -> str:
         </div>
       </a>
       <div class="info">
-        <div class="title-group">
-          <p class="title">{title}</p>
-          {prices_html}
-        </div>
+        <p class="title">{title}</p>
         {cta_html}
       </div>
     </div>"""
@@ -300,12 +291,6 @@ def generate_html(products: list[dict]) -> str:
       justify-content: space-between;
     }}
 
-    .title-group {{
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }}
-
     .title {{
       font-size: 1rem;
       font-weight: 600;
@@ -317,99 +302,46 @@ def generate_html(products: list[dict]) -> str:
       text-decoration: none;
     }}
 
-    .prices {{
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      margin-top: 2px;
-    }}
-
-    .price-row {{
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }}
-
-    .platform-tag {{
-      font-size: 0.68rem;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 4px;
-      flex-shrink: 0;
-      letter-spacing: 0.01em;
-    }}
-
-    .ohouse-tag {{
-      background: #e6f2e6;
-      color: #2a7a2a;
-    }}
-
-    .coupang-tag {{
-      background: #fde8e8;
-      color: #c0392b;
-    }}
-
-    .price {{
-      font-size: 0.92rem;
-      font-weight: 700;
-      color: #1a1a1a;
-    }}
-
     .cta-group {{
       display: flex;
-      gap: 8px;
+      gap: 10px;
     }}
 
     .cta {{
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      border-radius: 10px;
-      padding: 10px 14px;
+      gap: 4px;
+      border-radius: 12px;
+      padding: 12px 10px;
       text-decoration: none;
-      transition: background .18s ease;
+      transition: filter .18s ease;
       flex: 1;
     }}
 
-    .cta-solo {{
-      flex: none;
-      align-self: flex-start;
-      padding: 6px 10px;
+    .cta:hover {{
+      filter: brightness(0.93);
     }}
 
     .cta-ohouse {{
-      background: #f0ede8;
-      color: #888;
-    }}
-
-    .cta-ohouse:hover {{
-      background: #e5e0d8;
+      background: #c8c5c0;
+      color: #1a1a1a;
     }}
 
     .cta-coupang {{
-      background: #fff0f0;
-      color: #c0392b;
+      background: #f9b8cb;
+      color: #1a1a1a;
     }}
 
-    .cta-coupang:hover {{
-      background: #ffe0e0;
+    .cta-platform {{
+      font-size: 0.8rem;
+      font-weight: 700;
     }}
 
-    .cta-logo {{
-      height: 20px;
-      width: auto;
-      display: block;
-    }}
-
-    .cta-solo .cta-logo {{
-      height: 16px;
-    }}
-
-    .cta-arrow {{
-      font-size: 0.75rem;
-      opacity: 0.6;
-      line-height: 1;
+    .cta-price {{
+      font-size: 0.88rem;
+      font-weight: 700;
     }}
   </style>
 </head>
