@@ -21,11 +21,17 @@
       width: auto;
     }
 
-    .disclaimer {
+    .disclaimers {
       text-align: center;
+      margin-bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .disclaimer {
       font-size: 0.78rem;
       color: #aaa;
-      margin-bottom: 32px;
     }
 
     .toolbar {
@@ -222,16 +228,20 @@
       gap: 6px;
       border-radius: 10px;
       padding: 10px 14px;
-      font-size: 0.82rem;
-      font-weight: 600;
       text-decoration: none;
       transition: background .18s ease;
       flex: 1;
     }
 
+    .cta-solo {
+      flex: none;
+      align-self: flex-start;
+      padding: 6px 10px;
+    }
+
     .cta-ohouse {
       background: #f0ede8;
-      color: #444;
+      color: #888;
     }
 
     .cta-ohouse:hover {
@@ -250,13 +260,27 @@
     .cta-logo {
       height: 20px;
       width: auto;
+      display: block;
+    }
+
+    .cta-solo .cta-logo {
+      height: 16px;
+    }
+
+    .cta-arrow {
+      font-size: 0.75rem;
+      opacity: 0.6;
+      line-height: 1;
     }
   </style>
 </head>
 <body>
   <img src="images/zipjibzip_nobg.png" alt="zipjibzip" class="logo">
-  <p class="disclaimer">이 포스팅은 오늘의집 큐레이터 활동의 일환으로, 구매시 이에 따른 일정액의 수수료를 제공받습니다.</p>
-  <p class="disclaimer">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+  <div class="disclaimers">
+    <p class="disclaimer">이 포스팅은 오늘의집 큐레이터 활동의 일환으로, 구매시 이에 따른 일정액의 수수료를 제공받습니다.</p>
+    <p class="disclaimer">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+    <p class="disclaimer">※ 표시된 가격은 쿠폰 적용 전 가격이며, 배송비가 별도로 발생할 수 있습니다.</p>
+  </div>
   <div class="toolbar">
     <div class="tabs">
       <button class="tab active" data-filter="전체">전체</button>
@@ -288,11 +312,11 @@
         <div class="cta-group">
           <a class="cta cta-ohouse" href="https://ozip.me/HEXqc71?af" target="_blank" rel="noopener noreferrer">
             <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-            <span>오늘의집</span>
+            <span class="cta-arrow">↗</span>
           </a>
           <a class="cta cta-coupang" href="https://link.coupang.com/a/eoxYEu" target="_blank" rel="noopener noreferrer">
             <img src="images/coupang%20logo.png" alt="쿠팡" class="cta-logo">
-            <span>쿠팡</span>
+            <span class="cta-arrow">↗</span>
           </a>
         </div>
       </div>
@@ -308,9 +332,9 @@
           <p class="title">콜드포그 누구 이지체어 블루체크</p>
           <p class="price">890,000원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/uEh0J5D?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/uEh0J5D?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -325,9 +349,9 @@
           <p class="title">레빙 강화유리 좌식 테이블 1000</p>
           <p class="price">149,000원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/51CVYx8?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/51CVYx8?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -342,9 +366,9 @@
           <p class="title">모브릭 무타공 벽 수납장</p>
           <p class="price">149,000원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/d0vX0QI?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/d0vX0QI?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -359,9 +383,9 @@
           <p class="title">노르딕 원목 원형 다이닝 테이블 레트로 블루</p>
           <p class="price">744,000원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/IpDmnKH?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/IpDmnKH?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -376,9 +400,9 @@
           <p class="title">레트로 앤틱 원형 진자시계 그린</p>
           <p class="price">76,900원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/75jtAuw?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/75jtAuw?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -393,9 +417,9 @@
           <p class="title">온 로피 3단 서랍장 800</p>
           <p class="price">199,000원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/Iwk7fqS?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/Iwk7fqS?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -410,9 +434,9 @@
           <p class="title">레어로우 시스템000 스탠다드 선반 04</p>
           <p class="price">373,500원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/bL5jlyR?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/bL5jlyR?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -427,9 +451,9 @@
           <p class="title">글라스블록 포스터 Glass Block Wave Type</p>
           <p class="price">25,000원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/pAMCYNI?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/pAMCYNI?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -444,9 +468,9 @@
           <p class="title">아르덴 미러 라지 (L)</p>
           <p class="price">1,240,000원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/Z9hYoPF?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/Z9hYoPF?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -459,12 +483,18 @@
       <div class="info">
         <div class="title-group">
           <p class="title">베어허그 리클라이너 컴퓨터 의자 책상</p>
-          <p class="price">149,000원</p>
+          <div class="prices"><div class="price-row"><span class="platform-tag ohouse-tag">오늘의집</span><span class="price">149,000원</span></div><div class="price-row"><span class="platform-tag coupang-tag">쿠팡</span><span class="price">148,720원</span></div></div>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/axDNCda?af" target="_blank" rel="noopener noreferrer">
-          <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
-        </a>
+        <div class="cta-group">
+          <a class="cta cta-ohouse" href="https://ozip.me/axDNCda?af" target="_blank" rel="noopener noreferrer">
+            <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+            <span class="cta-arrow">↗</span>
+          </a>
+          <a class="cta cta-coupang" href="https://link.coupang.com/a/eoytZk" target="_blank" rel="noopener noreferrer">
+            <img src="images/coupang%20logo.png" alt="쿠팡" class="cta-logo">
+            <span class="cta-arrow">↗</span>
+          </a>
+        </div>
       </div>
     </div>
     <div class="card" data-category="의자" data-price="139800">
@@ -476,16 +506,16 @@
       <div class="info">
         <div class="title-group">
           <p class="title">센추리 CE550 책상 학생 사무실 컴퓨터 의자 체어 인조가죽</p>
-          <div class="prices"><div class="price-row"><span class="platform-tag ohouse-tag">오늘의집</span><span class="price">139,800원</span></div><div class="price-row"><span class="platform-tag coupang-tag">쿠팡</span><span class="price">148,720원</span></div></div>
+          <div class="prices"><div class="price-row"><span class="platform-tag ohouse-tag">오늘의집</span><span class="price">139,800원</span></div><div class="price-row"><span class="platform-tag coupang-tag">쿠팡</span><span class="price">102,900원</span></div></div>
         </div>
         <div class="cta-group">
           <a class="cta cta-ohouse" href="https://ozip.me/yeWpzw1?af" target="_blank" rel="noopener noreferrer">
             <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-            <span>오늘의집</span>
+            <span class="cta-arrow">↗</span>
           </a>
-          <a class="cta cta-coupang" href="https://link.coupang.com/a/eoytZk" target="_blank" rel="noopener noreferrer">
+          <a class="cta cta-coupang" href="https://link.coupang.com/a/eoyCaW" target="_blank" rel="noopener noreferrer">
             <img src="images/coupang%20logo.png" alt="쿠팡" class="cta-logo">
-            <span>쿠팡</span>
+            <span class="cta-arrow">↗</span>
           </a>
         </div>
       </div>
@@ -499,12 +529,18 @@
       <div class="info">
         <div class="title-group">
           <p class="title">스틸라 원목 미드센츄리 모듈 거실장</p>
-          <p class="price">289,000원</p>
+          <div class="prices"><div class="price-row"><span class="platform-tag ohouse-tag">오늘의집</span><span class="price">289,000원 시작</span></div><div class="price-row"><span class="platform-tag coupang-tag">쿠팡</span><span class="price">518,000원</span></div></div>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/FXtLzgm?af" target="_blank" rel="noopener noreferrer">
-          <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
-        </a>
+        <div class="cta-group">
+          <a class="cta cta-ohouse" href="https://ozip.me/FXtLzgm?af" target="_blank" rel="noopener noreferrer">
+            <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+            <span class="cta-arrow">↗</span>
+          </a>
+          <a class="cta cta-coupang" href="https://link.coupang.com/a/eoyEGx" target="_blank" rel="noopener noreferrer">
+            <img src="images/coupang%20logo.png" alt="쿠팡" class="cta-logo">
+            <span class="cta-arrow">↗</span>
+          </a>
+        </div>
       </div>
     </div>
     <div class="card" data-category="소품" data-price="89000">
@@ -516,12 +552,18 @@
       <div class="info">
         <div class="title-group">
           <p class="title">우드 룸 디바이더 공간분리 가벽 파티션 스크린</p>
-          <p class="price">89,000원</p>
+          <div class="prices"><div class="price-row"><span class="platform-tag ohouse-tag">오늘의집</span><span class="price">89,000원</span></div><div class="price-row"><span class="platform-tag coupang-tag">쿠팡</span><span class="price">130,000원</span></div></div>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/4kdK8tC?af" target="_blank" rel="noopener noreferrer">
-          <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
-        </a>
+        <div class="cta-group">
+          <a class="cta cta-ohouse" href="https://ozip.me/4kdK8tC?af" target="_blank" rel="noopener noreferrer">
+            <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+            <span class="cta-arrow">↗</span>
+          </a>
+          <a class="cta cta-coupang" href="https://link.coupang.com/a/eoyGjO" target="_blank" rel="noopener noreferrer">
+            <img src="images/coupang%20logo.png" alt="쿠팡" class="cta-logo">
+            <span class="cta-arrow">↗</span>
+          </a>
+        </div>
       </div>
     </div>
     <div class="card" data-category="조명" data-price="119900">
@@ -535,9 +577,9 @@
           <p class="title">앤틱 플로어 램프 한지조명 거실 인테리어 조명</p>
           <p class="price">119,900원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/LWyYQYw?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/LWyYQYw?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -552,9 +594,9 @@
           <p class="title">아날로그 웨더스테이션 알루미늄 쇠테리어 온도 기압 습도계</p>
           <p class="price">49,500원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/Z7zUUEt?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/Z7zUUEt?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -569,9 +611,9 @@
           <p class="title">국내제작 코마사 40수 200g 고중량 호텔수건 10장</p>
           <p class="price">65,900원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/VXEQ9bS" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/VXEQ9bS" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -586,9 +628,9 @@
           <p class="title">Wave Bracket 웨이브 벽등</p>
           <p class="price">120,000원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/6rd3eDw?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/6rd3eDw?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -603,9 +645,9 @@
           <p class="title">북유럽 싱글 소파 패브릭 체어 1인 안락의자</p>
           <p class="price">285,000원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/Wd1SQGc?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/Wd1SQGc?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -620,9 +662,9 @@
           <p class="title">베네벤토 모던 암리스 퀼팅 소파베드 침대 겸용 소파 패브릭 침대 소파</p>
           <p class="price">499,000원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/gLxCMbW?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/gLxCMbW?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -637,9 +679,9 @@
           <p class="title">노르딕 모자이크타일 모던 화이트 소파테이블 사이드테이블</p>
           <p class="price">580,000원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/7IF7vKK?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/7IF7vKK?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -654,9 +696,9 @@
           <p class="title">오아르마 원목 포세린 세라믹 2인용 4인용 원형 원목 식탁 테이블 1200</p>
           <p class="price">685,000원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/Vqedoim?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/Vqedoim?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -671,9 +713,9 @@
           <p class="title">매트실버 스텐 자석보드 슬라이딩거울 인테리어 벽거울</p>
           <p class="price">149,900원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/EncB0Zf?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/EncB0Zf?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -688,9 +730,9 @@
           <p class="title">[오늘의집 단독] Oho 스피커 LP랙 중형 ESF-LPR1M</p>
           <p class="price">78,000원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/lUIsXpl?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/lUIsXpl?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -705,9 +747,9 @@
           <p class="title">케이시 5단 미드센츄리 선반 높은 진열장 책장</p>
           <p class="price">158,000원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/rdGDvuP?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/rdGDvuP?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -722,9 +764,9 @@
           <p class="title">더크루즈 플로팅 원목 평상형 무헤드 프레임 호텔 침대 SLK_G68</p>
           <p class="price">699,000원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/B2V0JO3?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/B2V0JO3?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -739,9 +781,9 @@
           <p class="title">refine / 공간을 분리하는 파티션 책상/책장세트, 1200/1400</p>
           <p class="price">179,000원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/otwzkJP?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/otwzkJP?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>
@@ -756,9 +798,9 @@
           <p class="title">유메 세라믹 원목 아일랜드 식탁</p>
           <p class="price">1,100,000원</p>
         </div>
-        <a class="cta cta-ohouse" href="https://ozip.me/pkCaY7p?af" target="_blank" rel="noopener noreferrer">
+        <a class="cta cta-ohouse cta-solo" href="https://ozip.me/pkCaY7p?af" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>
       </div>
     </div>

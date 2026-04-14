@@ -19,8 +19,9 @@ PRODUCTS_DIR = Path("products")
 PRODUCTS_JSON = Path("products.json")
 OUTPUT_HTML = Path("index.html")
 CATALOG_TITLE = "zipjibzip picks"
-DISCLAIMER_OHOUSE = "이 포스팅은 오늘의집 큐레이터 활동의 일환으로, 구매시 이에 따른 일정액의 수수료를 제공받습니다."
+DISCLAIMER_OHOUSE  = "이 포스팅은 오늘의집 큐레이터 활동의 일환으로, 구매시 이에 따른 일정액의 수수료를 제공받습니다."
 DISCLAIMER_COUPANG = "이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다."
+DISCLAIMER_PRICE   = "※ 표시된 가격은 쿠폰 적용 전 가격이며, 배송비가 별도로 발생할 수 있습니다."
 
 
 def slug_to_title(slug: str) -> str:
@@ -75,7 +76,8 @@ def build_card(p: dict) -> str:
     ohouse_price  = p.get("ohouse price") or p.get("price", "")
     coupang_price = p.get("coupang price", "")
 
-    price_num = int(ohouse_price.replace(",", "").replace("원", "")) if ohouse_price else 0
+    digits = "".join(c for c in ohouse_price if c.isdigit()) if ohouse_price else ""
+    price_num = int(digits) if digits else 0
     has_coupang = bool(coupang_url)
 
     if has_coupang:
@@ -89,18 +91,18 @@ def build_card(p: dict) -> str:
         cta_html = f"""<div class="cta-group">
           <a class="cta cta-ohouse" href="{ohouse_url}" target="_blank" rel="noopener noreferrer">
             <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-            <span>오늘의집</span>
+            <span class="cta-arrow">↗</span>
           </a>
           <a class="cta cta-coupang" href="{coupang_url}" target="_blank" rel="noopener noreferrer">
             <img src="images/coupang%20logo.png" alt="쿠팡" class="cta-logo">
-            <span>쿠팡</span>
+            <span class="cta-arrow">↗</span>
           </a>
         </div>"""
     else:
         prices_html = f'<p class="price">{ohouse_price}</p>' if ohouse_price else ""
-        cta_html = f"""<a class="cta cta-ohouse" href="{ohouse_url}" target="_blank" rel="noopener noreferrer">
+        cta_html = f"""<a class="cta cta-ohouse cta-solo" href="{ohouse_url}" target="_blank" rel="noopener noreferrer">
           <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
-          <span>에서 구매하기</span>
+          <span class="cta-arrow">↗</span>
         </a>"""
 
     return f"""
@@ -158,11 +160,17 @@ def generate_html(products: list[dict]) -> str:
       width: auto;
     }}
 
-    .disclaimer {{
+    .disclaimers {{
       text-align: center;
+      margin-bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }}
+
+    .disclaimer {{
       font-size: 0.78rem;
       color: #aaa;
-      margin-bottom: 32px;
     }}
 
     .toolbar {{
@@ -359,16 +367,20 @@ def generate_html(products: list[dict]) -> str:
       gap: 6px;
       border-radius: 10px;
       padding: 10px 14px;
-      font-size: 0.82rem;
-      font-weight: 600;
       text-decoration: none;
       transition: background .18s ease;
       flex: 1;
     }}
 
+    .cta-solo {{
+      flex: none;
+      align-self: flex-start;
+      padding: 6px 10px;
+    }}
+
     .cta-ohouse {{
       background: #f0ede8;
-      color: #444;
+      color: #888;
     }}
 
     .cta-ohouse:hover {{
@@ -387,13 +399,27 @@ def generate_html(products: list[dict]) -> str:
     .cta-logo {{
       height: 20px;
       width: auto;
+      display: block;
+    }}
+
+    .cta-solo .cta-logo {{
+      height: 16px;
+    }}
+
+    .cta-arrow {{
+      font-size: 0.75rem;
+      opacity: 0.6;
+      line-height: 1;
     }}
   </style>
 </head>
 <body>
   <img src="images/zipjibzip_nobg.png" alt="zipjibzip" class="logo">
-  <p class="disclaimer">{DISCLAIMER_OHOUSE}</p>
-  <p class="disclaimer">{DISCLAIMER_COUPANG}</p>
+  <div class="disclaimers">
+    <p class="disclaimer">{DISCLAIMER_OHOUSE}</p>
+    <p class="disclaimer">{DISCLAIMER_COUPANG}</p>
+    <p class="disclaimer">{DISCLAIMER_PRICE}</p>
+  </div>
   <div class="toolbar">
     <div class="tabs">
       {tabs}
