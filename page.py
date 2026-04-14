@@ -334,12 +334,14 @@ def generate_html(products: list[dict]) -> str:
     }}
 
     .cta-ohouse {{
-      background: #e8e5e1;
+      background: #fff;
+      border: 2px solid #00C4B4;
       color: #1a1a1a;
     }}
 
     .cta-coupang {{
-      background: #fce4ee;
+      background: #fff;
+      border: 2px solid #E62342;
       color: #1a1a1a;
     }}
 
@@ -350,7 +352,7 @@ def generate_html(products: list[dict]) -> str:
     }}
 
     .cta-logo {{
-      height: 18px;
+      height: 22px;
       width: auto;
       display: block;
     }}
