@@ -229,6 +229,97 @@
       font-size: 0.85rem;
       font-weight: 700;
     }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 24px 14px 60px;
+      }
+
+      .logo {
+        max-height: 80px;
+        margin-bottom: 16px;
+      }
+
+      .disclaimers {
+        margin-bottom: 20px;
+      }
+
+      .disclaimer {
+        font-size: 0.72rem;
+      }
+
+      .toolbar {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+      }
+
+      .tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tab {
+        flex-shrink: 0;
+        padding: 7px 14px;
+        font-size: 0.82rem;
+      }
+
+      .sort-controls {
+        flex-direction: row;
+        width: 100%;
+      }
+
+      .sort-btn {
+        flex: 1;
+        text-align: center;
+        padding: 7px 8px;
+        font-size: 0.78rem;
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .info {
+        padding: 10px 10px 12px;
+        gap: 8px;
+      }
+
+      .title {
+        font-size: 0.8rem;
+      }
+
+      .cta-group {
+        gap: 6px;
+      }
+
+      .cta {
+        padding: 8px 6px;
+        gap: 3px;
+        border-radius: 10px;
+      }
+
+      .cta-logo {
+        height: 15px;
+      }
+
+      .cta-arrow {
+        font-size: 0.7rem;
+      }
+
+      .cta-price {
+        font-size: 0.72rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -248,6 +339,8 @@
     <button class="tab" data-filter="소품">소품</button>
     <button class="tab" data-filter="소파">소파</button>
     <button class="tab" data-filter="침대">침대</button>
+    <button class="tab" data-filter="책상">책상</button>
+    <button class="tab" data-filter="TV">TV</button>
     </div>
     <div class="sort-controls">
       <button class="sort-btn" data-sort="asc">가격 낮은순 ↑</button>
@@ -798,7 +891,7 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="수납" data-price="179000">
+    <div class="card" data-category="책상" data-price="179000">
       <a class="img-link" href="https://ozip.me/otwzkJP?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/refine-partition-desk-bookshelf-set_card_1.png" alt="refine / 공간을 분리하는 파티션 책상/책장세트, 1200/1400" loading="lazy">
@@ -832,6 +925,108 @@
               <span class="cta-arrow">↗</span>
             </div>
             <span class="cta-price">1,100,000원</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card" data-category="TV" data-price="2750000">
+      <a class="img-link" href="https://ozip.me/oh2Kxag?af" target="_blank" rel="noopener noreferrer">
+        <div class="img-wrap">
+          <img src="products/stylevision-tv-trolley-55-oled_card_1.png" alt="스타일비전 TV | 트롤리 55" OLED" loading="lazy">
+        </div>
+      </a>
+      <div class="info">
+        <p class="title">스타일비전 TV | 트롤리 55" OLED</p>
+        <div class="cta-group">
+          <a class="cta cta-ohouse" href="https://ozip.me/oh2Kxag?af" target="_blank" rel="noopener noreferrer">
+            <div class="cta-top">
+              <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
+            <span class="cta-price">2,750,000원</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card" data-category="소품" data-price="139900">
+      <a class="img-link" href="https://ozip.me/kaCzmya?af" target="_blank" rel="noopener noreferrer">
+        <div class="img-wrap">
+          <img src="products/dulton-bonox-double-face-round-wall-clock_card_1.png" alt="DULTON 양면 원형 벽시계 금속 소형 레트로 시계 BONOX" loading="lazy">
+        </div>
+      </a>
+      <div class="info">
+        <p class="title">DULTON 양면 원형 벽시계 금속 소형 레트로 시계 BONOX</p>
+        <div class="cta-group">
+          <a class="cta cta-ohouse" href="https://ozip.me/kaCzmya?af" target="_blank" rel="noopener noreferrer">
+            <div class="cta-top">
+              <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
+            <span class="cta-price">139,900원</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card" data-category="소품" data-price="70000">
+      <a class="img-link" href="https://ozip.me/JWqcmFU?af" target="_blank" rel="noopener noreferrer">
+        <div class="img-wrap">
+          <img src="products/mesh-net-bag-fruit-basket_card_1.png" alt="메쉬그물가방 과일바구니 다용도가방" loading="lazy">
+        </div>
+      </a>
+      <div class="info">
+        <p class="title">메쉬그물가방 과일바구니 다용도가방</p>
+        <div class="cta-group">
+          <a class="cta cta-ohouse" href="https://ozip.me/JWqcmFU?af" target="_blank" rel="noopener noreferrer">
+            <div class="cta-top">
+              <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
+            <span class="cta-price">70,000원</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card" data-category="테이블" data-price="143000">
+      <a class="img-link" href="https://ozip.me/PK9aAMR?af" target="_blank" rel="noopener noreferrer">
+        <div class="img-wrap">
+          <img src="products/frs-black-ash-bed-side-table_card_1.png" alt="[오늘의집 단독] FRS 에프알에스 블랙 애쉬 원목 베드 사이드 테이블" loading="lazy">
+        </div>
+      </a>
+      <div class="info">
+        <p class="title">[오늘의집 단독] FRS 에프알에스 블랙 애쉬 원목 베드 사이드 테이블</p>
+        <div class="cta-group">
+          <a class="cta cta-ohouse" href="https://ozip.me/PK9aAMR?af" target="_blank" rel="noopener noreferrer">
+            <div class="cta-top">
+              <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
+            <span class="cta-price">143,000원</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card" data-category="소파" data-price="469000">
+      <a class="img-link" href="https://ozip.me/2fzr8Qs?af" target="_blank" rel="noopener noreferrer">
+        <div class="img-wrap">
+          <img src="products/day-3seater-fabric-sofa-bed_card_1.png" alt="데이 3인 패브릭 풀커버 모듈 압축 소파베드 4colors" loading="lazy">
+        </div>
+      </a>
+      <div class="info">
+        <p class="title">데이 3인 패브릭 풀커버 모듈 압축 소파베드 4colors</p>
+        <div class="cta-group">
+          <a class="cta cta-ohouse" href="https://ozip.me/2fzr8Qs?af" target="_blank" rel="noopener noreferrer">
+            <div class="cta-top">
+              <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
+            <span class="cta-price">469,000원</span>
+          </a>
+          <a class="cta cta-coupang" href="https://link.coupang.com/a/epG3lr" target="_blank" rel="noopener noreferrer">
+            <div class="cta-top">
+              <img src="images/coupang%20logo.png" alt="쿠팡" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
+            <span class="cta-price">469,000원</span>
           </a>
         </div>
       </div>

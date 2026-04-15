@@ -368,6 +368,97 @@ def generate_html(products: list[dict]) -> str:
       font-size: 0.85rem;
       font-weight: 700;
     }}
+
+    @media (max-width: 640px) {{
+      body {{
+        padding: 24px 14px 60px;
+      }}
+
+      .logo {{
+        max-height: 80px;
+        margin-bottom: 16px;
+      }}
+
+      .disclaimers {{
+        margin-bottom: 20px;
+      }}
+
+      .disclaimer {{
+        font-size: 0.72rem;
+      }}
+
+      .toolbar {{
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+      }}
+
+      .tabs {{
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+      }}
+
+      .tabs::-webkit-scrollbar {{
+        display: none;
+      }}
+
+      .tab {{
+        flex-shrink: 0;
+        padding: 7px 14px;
+        font-size: 0.82rem;
+      }}
+
+      .sort-controls {{
+        flex-direction: row;
+        width: 100%;
+      }}
+
+      .sort-btn {{
+        flex: 1;
+        text-align: center;
+        padding: 7px 8px;
+        font-size: 0.78rem;
+      }}
+
+      .grid {{
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }}
+
+      .info {{
+        padding: 10px 10px 12px;
+        gap: 8px;
+      }}
+
+      .title {{
+        font-size: 0.8rem;
+      }}
+
+      .cta-group {{
+        gap: 6px;
+      }}
+
+      .cta {{
+        padding: 8px 6px;
+        gap: 3px;
+        border-radius: 10px;
+      }}
+
+      .cta-logo {{
+        height: 15px;
+      }}
+
+      .cta-arrow {{
+        font-size: 0.7rem;
+      }}
+
+      .cta-price {{
+        font-size: 0.72rem;
+      }}
+    }}
   </style>
 </head>
 <body>

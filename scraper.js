@@ -48,7 +48,53 @@ async function scrapeOhou(page) {
   await page.evaluate(() => window.scrollTo(0, 0));
   await randomDelay(600, 1000);
 
-  return await page.evaluate(() => {
+  // 컬러 옵션으로 모든 변형 이미지 수집 (select 드롭다운 + 버튼 스와치 모두 지원)
+  const variantImageUrls = new Set();
+  const galleryImgSelectors = '[class*="GoodsImageGallery"] img, [class*="ImageSwiper"] img, [class*="MainImage"] img, [class*="GoodsSwiper"] img, [class*="pdp-image"] img';
+  try {
+    // 1) <select> 드롭다운 방식 (오늘의집 일반)
+    const colorSelects = await page.$$('select');
+    for (const sel of colorSelects.slice(0, 2)) {
+      const optCount = await sel.evaluate(s => s.options.length);
+      for (let i = 1; i < Math.min(optCount, 8); i++) {
+        try {
+          await sel.selectOption({ index: i });
+          await page.waitForTimeout(800);
+          const urls = await page.$$eval(galleryImgSelectors,
+            imgs => imgs.map(img => img.src || '').filter(s => s.startsWith('http') && s.includes('uploads'))
+          );
+          urls.forEach(u => variantImageUrls.add(u.split('?')[0]));
+        } catch(e) {}
+      }
+      if (variantImageUrls.size > 0) break; // 첫 select에서 수집되면 중단
+    }
+
+    // 2) 버튼·칩 방식 fallback
+    if (variantImageUrls.size === 0) {
+      const swatchSelectors = [
+        '[class*="ColorChip"]', '[class*="colorChip"]',
+        '[class*="ColorOption"] button', '[class*="OptionColor"] button',
+        '[class*="GoodsOption"] [class*="Chip"]', '[class*="option-chip"]',
+      ];
+      let swatches = [];
+      for (const ss of swatchSelectors) {
+        swatches = await page.$$(ss);
+        if (swatches.length > 0) break;
+      }
+      for (const swatch of swatches.slice(0, 8)) {
+        try {
+          await swatch.click();
+          await page.waitForTimeout(700);
+          const urls = await page.$$eval(galleryImgSelectors,
+            imgs => imgs.map(img => img.src || '').filter(s => s.startsWith('http') && s.includes('uploads'))
+          );
+          urls.forEach(u => variantImageUrls.add(u.split('?')[0]));
+        } catch(e) {}
+      }
+    }
+  } catch(e) {}
+
+  return await page.evaluate((extraUrls) => {
     const getText = (selectors) => {
       for (const sel of selectors) {
         const el = document.querySelector(sel);
@@ -236,7 +282,37 @@ async function scrapeOhou(page) {
       productImgUrls.push(...detailImgUrls);
     }
 
-    const imageUrls = productImgUrls.slice(0, 6);
+    // 3순위: 갤러리 썸네일 스트립 (w=72 소형 이미지 → 베이스 URL 추출해 풀해상도로 추가)
+    // 컬러 변형 이미지가 썸네일로만 존재하는 경우를 커버
+    // PNG는 인포그래픽/설명 이미지일 가능성이 높으므로 제외
+    const thumbAdded = new Set(productImgUrls.map(u => u.split('?')[0]));
+    document.querySelectorAll('img').forEach(img => {
+      const src = img.src || '';
+      if (!src.includes('ohousecdn.com') && !src.includes('ohou.se')) return;
+      if (!src.includes('uploads/productions')) return;
+      if (src.includes('/admins/') || src.includes('/community/') || src.includes('/seller/')) return;
+      if (src.includes('.png') || src.includes('.svg')) return; // 인포그래픽/아이콘 제외
+      const wMatch = src.match(/[?&]w=(\d+)/);
+      if (!wMatch || parseInt(wMatch[1]) > 256) return; // 이 블록은 소형 썸네일만 처리
+      const base = src.split('?')[0];
+      if (!thumbAdded.has(base)) {
+        thumbAdded.add(base);
+        productImgUrls.push(base); // 쿼리 파라미터 없는 풀해상도 URL
+      }
+    });
+
+    // 컬러 변형 이미지 병합 (extraUrls: base URL 목록)
+    if (extraUrls && extraUrls.length > 0) {
+      const seenVariant = new Set(productImgUrls.map(u => u.split('?')[0]));
+      for (const base of extraUrls) {
+        if (!seenVariant.has(base)) {
+          seenVariant.add(base);
+          productImgUrls.push(base);
+        }
+      }
+    }
+
+    const imageUrls = productImgUrls.slice(0, 8);
 
     // ── 리뷰/평점
     const rating = getText([
@@ -264,12 +340,12 @@ async function scrapeOhou(page) {
       discount,
       description: description.slice(0, 1000),
       features: features.slice(0, 15),
-      imageUrls: imageUrls.slice(0, 6),
+      imageUrls: imageUrls.slice(0, 8),
       rating,
       brand,
       url: window.location.href
     };
-  });
+  }, [...variantImageUrls]);
 }
 
 async function scrapeCoupang(page) {

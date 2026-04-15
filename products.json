@@ -264,7 +264,7 @@
     "title": "refine / 공간을 분리하는 파티션 책상/책장세트, 1200/1400",
     "image": "products/refine-partition-desk-bookshelf-set_card_1.png",
     "purchase_url": "https://ozip.me/otwzkJP?af",
-    "category": "수납",
+    "category": "책상",
     "coupang_url": "",
     "ohouse price": "179,000원",
     "coupang price": ""
@@ -278,5 +278,55 @@
     "coupang_url": "",
     "ohouse price": "1,100,000원",
     "coupang price": ""
+  },
+  {
+    "slug": "stylevision-tv-trolley-55-oled",
+    "title": "스타일비전 TV | 트롤리 55\" OLED",
+    "image": "products/stylevision-tv-trolley-55-oled_card_1.png",
+    "purchase_url": "https://ozip.me/oh2Kxag?af",
+    "category": "TV",
+    "coupang_url": "",
+    "ohouse price": "2,750,000원",
+    "coupang price": ""
+  },
+  {
+    "slug": "dulton-bonox-double-face-round-wall-clock",
+    "title": "DULTON 양면 원형 벽시계 금속 소형 레트로 시계 BONOX",
+    "image": "products/dulton-bonox-double-face-round-wall-clock_card_1.png",
+    "purchase_url": "https://ozip.me/kaCzmya?af",
+    "category": "소품",
+    "coupang_url": "",
+    "ohouse price": "139,900원",
+    "coupang price": ""
+  },
+  {
+    "slug": "mesh-net-bag-fruit-basket",
+    "title": "메쉬그물가방 과일바구니 다용도가방",
+    "image": "products/mesh-net-bag-fruit-basket_card_1.png",
+    "purchase_url": "https://ozip.me/JWqcmFU?af",
+    "category": "소품",
+    "coupang_url": "",
+    "ohouse price": "70,000원",
+    "coupang price": ""
+  },
+  {
+    "slug": "frs-black-ash-bed-side-table",
+    "title": "[오늘의집 단독] FRS 에프알에스 블랙 애쉬 원목 베드 사이드 테이블",
+    "image": "products/frs-black-ash-bed-side-table_card_1.png",
+    "purchase_url": "https://ozip.me/PK9aAMR?af",
+    "category": "테이블",
+    "coupang_url": "",
+    "ohouse price": "143,000원",
+    "coupang price": ""
+  },
+  {
+    "slug": "day-3seater-fabric-sofa-bed",
+    "title": "데이 3인 패브릭 풀커버 모듈 압축 소파베드 4colors",
+    "image": "products/day-3seater-fabric-sofa-bed_card_1.png",
+    "purchase_url": "https://ozip.me/2fzr8Qs?af",
+    "category": "소파",
+    "coupang_url": "https://link.coupang.com/a/epG3lr",
+    "ohouse price": "469,000원",
+    "coupang price": "469,000원"
   }
 ]

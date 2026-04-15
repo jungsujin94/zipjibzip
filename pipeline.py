@@ -176,7 +176,7 @@ def run(url: str, force_img_idx: int = None):
     scraped_data = scrape_product(url)
 
     # 4. 제품 이미지 여러 장 다운로드 (최대 5장)
-    product_image_paths = download_product_images(scraped_data, url, max_images=5)
+    product_image_paths = download_product_images(scraped_data, url, max_images=8)
 
     if force_img_idx is not None:
         # retry N: birefnet 건너뛰고 지정 인덱스를 card1 이미지로
