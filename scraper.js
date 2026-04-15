@@ -56,10 +56,10 @@ async function scrapeOhou(page) {
     const colorSelects = await page.$$('select');
     for (const sel of colorSelects.slice(0, 2)) {
       const optCount = await sel.evaluate(s => s.options.length);
-      for (let i = 1; i < Math.min(optCount, 8); i++) {
+      for (let i = 1; i < Math.min(optCount, 5); i++) {
         try {
           await sel.selectOption({ index: i });
-          await page.waitForTimeout(800);
+          await page.waitForTimeout(500);
           const urls = await page.$$eval(galleryImgSelectors,
             imgs => imgs.map(img => img.src || '').filter(s => s.startsWith('http') && s.includes('uploads'))
           );
@@ -81,10 +81,10 @@ async function scrapeOhou(page) {
         swatches = await page.$$(ss);
         if (swatches.length > 0) break;
       }
-      for (const swatch of swatches.slice(0, 8)) {
+      for (const swatch of swatches.slice(0, 6)) {
         try {
           await swatch.click();
-          await page.waitForTimeout(700);
+          await page.waitForTimeout(500);
           const urls = await page.$$eval(galleryImgSelectors,
             imgs => imgs.map(img => img.src || '').filter(s => s.startsWith('http') && s.includes('uploads'))
           );

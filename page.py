@@ -384,7 +384,10 @@ def generate_html(products: list[dict]) -> str:
       }}
 
       .disclaimer {{
-        font-size: 0.72rem;
+        font-size: 0.58rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }}
 
       .toolbar {{

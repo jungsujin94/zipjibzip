@@ -21,7 +21,8 @@ SCRAPER_JS = os.path.join(os.path.dirname(__file__), "scraper.js")
 
 
 def resolve_url(url: str) -> str:
-    """단축 URL(ozip.me 등)을 실제 URL로 자동 해석."""
+    """단축 URL(ozip.me 등)을 실제 URL로 자동 해석. 추적 파라미터를 제거해 클린 URL 반환."""
+    from urllib.parse import urlparse, urlunparse
     short_domains = ["ozip.me", "bit.ly", "tinyurl.com", "t.co", "goo.gl", "ow.ly"]
     if any(d in url for d in short_domains):
         try:
@@ -30,7 +31,12 @@ def resolve_url(url: str) -> str:
             resolved = resp.url
             if resolved != url:
                 print(f"[pipeline] 단축 URL 해석: {url} → {resolved}", flush=True)
-            return resolved
+            # 추적 파라미터 제거 (airbridge, utm 등) — 스크래퍼에 불필요
+            parsed = urlparse(resolved)
+            clean = urlunparse(parsed._replace(query="", fragment=""))
+            if clean != resolved:
+                print(f"[pipeline] 클린 URL: {clean}", flush=True)
+            return clean
         except Exception as e:
             print(f"[pipeline] URL 해석 실패, 원본 사용: {e}", flush=True)
     return url
@@ -50,7 +56,7 @@ def scrape_product(url: str) -> dict:
         capture_output=True,
         text=True,
         encoding="utf-8",
-        timeout=60
+        timeout=180
     )
 
     if result.returncode != 0:
