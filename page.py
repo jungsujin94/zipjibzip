@@ -182,11 +182,16 @@ def generate_html(products: list[dict]) -> str:
       margin: 0 auto 36px;
     }}
 
+    .tabs-wrap {{
+      flex: 1;
+      min-width: 0;
+      position: relative;
+    }}
+
     .tabs {{
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      flex: 1;
     }}
 
     .tab {{
@@ -396,6 +401,22 @@ def generate_html(products: list[dict]) -> str:
         margin-bottom: 20px;
       }}
 
+      .tabs-wrap::after {{
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 48px;
+        background: linear-gradient(to right, transparent, #f5f4f0);
+        pointer-events: none;
+        transition: opacity .25s;
+      }}
+
+      .tabs-wrap.at-end::after {{
+        opacity: 0;
+      }}
+
       .tabs {{
         flex-wrap: nowrap;
         overflow-x: auto;
@@ -472,8 +493,10 @@ def generate_html(products: list[dict]) -> str:
     <p class="disclaimer">{DISCLAIMER_PRICE}</p>
   </div>
   <div class="toolbar">
-    <div class="tabs">
-      {tabs}
+    <div class="tabs-wrap">
+      <div class="tabs">
+        {tabs}
+      </div>
     </div>
     <div class="sort-controls">
       <button class="sort-btn" data-sort="asc">가격 낮은순 ↑</button>
@@ -521,6 +544,19 @@ def generate_html(products: list[dict]) -> str:
         applyFilterAndSort();
       }});
     }});
+
+    // Fade indicator for mobile tab scroll
+    const tabsEl = document.querySelector('.tabs');
+    const tabsWrap = document.querySelector('.tabs-wrap');
+    if (tabsEl && tabsWrap) {{
+      const updateFade = () => {{
+        const atEnd = tabsEl.scrollLeft + tabsEl.clientWidth >= tabsEl.scrollWidth - 4;
+        tabsWrap.classList.toggle('at-end', atEnd);
+      }};
+      tabsEl.addEventListener('scroll', updateFade, {{ passive: true }});
+      window.addEventListener('resize', updateFade);
+      updateFade();
+    }}
 
     sortBtns.forEach(btn => {{
       btn.addEventListener('click', () => {{

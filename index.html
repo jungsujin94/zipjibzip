@@ -43,11 +43,16 @@
       margin: 0 auto 36px;
     }
 
+    .tabs-wrap {
+      flex: 1;
+      min-width: 0;
+      position: relative;
+    }
+
     .tabs {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      flex: 1;
     }
 
     .tab {
@@ -257,6 +262,22 @@
         margin-bottom: 20px;
       }
 
+      .tabs-wrap::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 48px;
+        background: linear-gradient(to right, transparent, #f5f4f0);
+        pointer-events: none;
+        transition: opacity .25s;
+      }
+
+      .tabs-wrap.at-end::after {
+        opacity: 0;
+      }
+
       .tabs {
         flex-wrap: nowrap;
         overflow-x: auto;
@@ -333,8 +354,9 @@
     <p class="disclaimer">※ 표시된 가격은 쿠폰 적용 전 가격이며, 배송비가 별도로 발생할 수 있습니다.</p>
   </div>
   <div class="toolbar">
-    <div class="tabs">
-      <button class="tab active" data-filter="전체">전체</button>
+    <div class="tabs-wrap">
+      <div class="tabs">
+        <button class="tab active" data-filter="전체">전체</button>
     <button class="tab" data-filter="조명">조명</button>
     <button class="tab" data-filter="의자">의자</button>
     <button class="tab" data-filter="테이블">테이블</button>
@@ -343,7 +365,8 @@
     <button class="tab" data-filter="소파">소파</button>
     <button class="tab" data-filter="침대">침대</button>
     <button class="tab" data-filter="책상">책상</button>
-    <button class="tab" data-filter="TV">TV</button>
+    <button class="tab" data-filter="가전">가전</button>
+      </div>
     </div>
     <div class="sort-controls">
       <button class="sort-btn" data-sort="asc">가격 낮은순 ↑</button>
@@ -932,7 +955,7 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="TV" data-price="2750000">
+    <div class="card" data-category="가전" data-price="2750000">
       <a class="img-link" href="https://ozip.me/oh2Kxag?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/stylevision-tv-trolley-55-oled_card_1.png" alt="스타일비전 TV | 트롤리 55" OLED" loading="lazy">
@@ -1100,6 +1123,19 @@
         applyFilterAndSort();
       });
     });
+
+    // Fade indicator for mobile tab scroll
+    const tabsEl = document.querySelector('.tabs');
+    const tabsWrap = document.querySelector('.tabs-wrap');
+    if (tabsEl && tabsWrap) {
+      const updateFade = () => {
+        const atEnd = tabsEl.scrollLeft + tabsEl.clientWidth >= tabsEl.scrollWidth - 4;
+        tabsWrap.classList.toggle('at-end', atEnd);
+      };
+      tabsEl.addEventListener('scroll', updateFade, { passive: true });
+      window.addEventListener('resize', updateFade);
+      updateFade();
+    }
 
     sortBtns.forEach(btn => {
       btn.addEventListener('click', () => {
