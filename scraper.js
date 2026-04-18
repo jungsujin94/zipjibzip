@@ -24,6 +24,61 @@ function randomDelay(min = 1000, max = 3000) {
   return new Promise(resolve => setTimeout(resolve, Math.floor(Math.random() * (max - min) + min)));
 }
 
+async function scrapeOhouReviews(page) {
+  const reviews = [];
+  try {
+    // 리뷰 탭/버튼 클릭 시도
+    const reviewTabCandidates = await page.$$('button, [role="tab"], a');
+    for (const el of reviewTabCandidates) {
+      try {
+        const text = await el.textContent();
+        if (/^리뷰/.test((text || '').trim())) {
+          await el.scrollIntoViewIfNeeded();
+          await el.click();
+          await page.waitForTimeout(2500);
+          break;
+        }
+      } catch(e) {}
+    }
+
+    const raw = await page.evaluate(() => {
+      const items = [];
+      const containerSelectors = [
+        '[class*="ReviewItem"]',
+        '[class*="review-item"]',
+        '[class*="GoodsReviewItem"]',
+        '[class*="UserReviewItem"]',
+        '[class*="ReviewListItem"]',
+      ];
+      for (const sel of containerSelectors) {
+        const els = document.querySelectorAll(sel);
+        if (!els.length) continue;
+        for (const el of Array.from(els).slice(0, 6)) {
+          const bodyEl = el.querySelector(
+            '[class*="Body"], [class*="Content"], [class*="Text"], [class*="body"], [class*="content"], p'
+          );
+          const text = ((bodyEl || el).innerText || '').trim().replace(/\s+/g, ' ');
+
+          // 별점: 채워진 별 개수 카운팅
+          const filled = el.querySelectorAll(
+            '[class*="StarFill"], [class*="star-fill"], [class*="StarActive"], [class*="on"]'
+          ).length;
+          const rating = (filled >= 1 && filled <= 5) ? filled : 5;
+
+          if (text.length >= 15) {
+            items.push({ text: text.slice(0, 150), rating });
+          }
+          if (items.length >= 5) break;
+        }
+        if (items.length > 0) break;
+      }
+      return items;
+    });
+    reviews.push(...raw);
+  } catch(e) {}
+  return reviews;
+}
+
 async function scrapeOhou(page) {
   try {
     await page.waitForSelector('h1, [class*="GoodsName"], [class*="goods-name"], [class*="ProductName"], [class*="product-name"]', { timeout: 20000 });
@@ -94,7 +149,7 @@ async function scrapeOhou(page) {
     }
   } catch(e) {}
 
-  return await page.evaluate((extraUrls) => {
+  const data = await page.evaluate((extraUrls) => {
     const getText = (selectors) => {
       for (const sel of selectors) {
         const el = document.querySelector(sel);
@@ -346,6 +401,9 @@ async function scrapeOhou(page) {
       url: window.location.href
     };
   }, [...variantImageUrls]);
+
+  data.reviews = await scrapeOhouReviews(page);
+  return data;
 }
 
 async function scrapeCoupang(page) {

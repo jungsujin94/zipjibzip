@@ -39,7 +39,8 @@
       "Skill(cardnews:*)",
       "Bash(ls C:/cardnews/output/liquified-persian-rug_img_*.*)",
       "Bash(ls C:/cardnews/output/liquified-persian-rug_img_*)",
-      "Bash(ls C:/cardnews/images/saytoucherug*)"
+      "Bash(ls C:/cardnews/images/saytoucherug*)",
+      "WebFetch(domain:store.ohou.se)"
     ]
   }
 }

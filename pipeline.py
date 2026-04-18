@@ -83,6 +83,10 @@ def download_product_images(scraped_data: dict, referer_url: str,
     if not image_urls:
         return []
 
+    # 배송/설치 안내 등 비제품 이미지 URL 필터링
+    SKIP_PATTERNS = ["/guide/", "omh_delivery", "omh_install", "_guide_", "delivery_guide"]
+    image_urls = [u for u in image_urls if not any(p in u for p in SKIP_PATTERNS)]
+
     # 쿼리 파라미터 제거 후 중복 URL 제거 (같은 이미지 다른 해상도 중복 방지)
     from urllib.parse import urlparse
     seen_bases = set()
@@ -154,7 +158,7 @@ def _promote_best_card1_image(paths: list) -> list:
     return paths
 
 
-def run(url: str, force_img_idx: int = None, custom_img_path: str = None, custom_img_3: str = None):
+def run(url: str, force_img_idx: int = None, custom_img_path: str = None, custom_img_3: str = None, card6_img_idx: int = None, custom_img_6: str = None):
     """
     force_img_idx:  0-based. 지정 시 birefnet 선별을 건너뛰고 해당 인덱스 이미지를 card1에 사용.
                    캐시된 content JSON이 있으면 AI 추출도 생략.
@@ -225,7 +229,7 @@ def run(url: str, force_img_idx: int = None, custom_img_path: str = None, custom
 
     # 6. 카드뉴스 PNG 렌더링
     print(f"[pipeline] 카드뉴스 이미지 생성 중...", flush=True)
-    output_paths = render_all_cards(card_content, OUTPUT_DIR, product_image_paths, custom_img_3=custom_img_3)
+    output_paths = render_all_cards(card_content, OUTPUT_DIR, product_image_paths, custom_img_3=custom_img_3, card6_img_idx=card6_img_idx, custom_img_6=custom_img_6)
 
     # 7. 카드 콘텐츠 JSON 저장
     slug = card_content.get("product_slug", "product")
@@ -311,13 +315,20 @@ if __name__ == "__main__":
                         help="card1에 쓸 로컬 이미지 파일 경로.")
     parser.add_argument("--custom-img-3", type=str, default=None,
                         help="card3 하단 스케치에 쓸 로컬 이미지 파일 경로.")
+    parser.add_argument("--img-6", type=int, default=None,
+                        help="card6에 쓸 이미지 번호 (1-based).")
+    parser.add_argument("--custom-img-6", type=str, default=None,
+                        help="card6에 쓸 로컬 이미지 파일 경로.")
     args = parser.parse_args()
 
     force_idx = (args.img - 1) if args.img is not None else None
+    card6_idx = (args.img_6 - 1) if args.img_6 is not None else None
     try:
         run(args.url.strip(), force_img_idx=force_idx,
             custom_img_path=args.custom_img,
-            custom_img_3=getattr(args, 'custom_img_3', None))
+            custom_img_3=getattr(args, 'custom_img_3', None),
+            card6_img_idx=card6_idx,
+            custom_img_6=getattr(args, 'custom_img_6', None))
     except Exception as e:
         print(f"\n오류 발생: {e}", file=sys.stderr)
         sys.exit(1)

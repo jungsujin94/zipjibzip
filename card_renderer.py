@@ -510,6 +510,144 @@ def render_problem(c: dict, prod_img_path: str = None) -> Image.Image:
 
 
 # ══════════════════════════════════════════════════════════════════
+# CARD 2b — COMBO (Pain Points + Selection Points)
+# ══════════════════════════════════════════════════════════════════
+
+def render_combo(c: dict, prod_img_path: str = None) -> Image.Image:
+    """페인포인트 3개 + 선택 포인트 3개를 한 장에"""
+    img = make_bg()
+    ghost(img, prod_img_path,
+          target_w=int(W * 0.62), x=int(W * 0.38), y=int(H * 0.28),
+          opacity=0.10)
+
+    draw = ImageDraw.Draw(img)
+
+    # ── 상단: 페인포인트 ──────────────────────────────────────────
+    pain_headline = c.get("pain_headline", "이런 고민 있으신가요?")
+    fh = F(BOLD, 50)
+    h1 = put(draw, pain_headline, fh, C["text"], PAD, PAD + 44, W - PAD*2, line_gap=10)
+
+    thin_rule(draw, PAD + 44 + h1 + 18)
+
+    pts = c.get("pain_points", [])[:3]
+    ft  = F(SERIF, 36)
+    fn  = F(BOLD, 22)
+
+    pain_top    = PAD + 44 + h1 + 42
+    pain_slot_h = 90
+
+    for i, pt in enumerate(pts):
+        num = f"{i+1:02d}"
+        nb  = draw.textbbox((0, 0), num, font=fn)
+        ny  = pain_top + i * pain_slot_h + (pain_slot_h - (nb[3]-nb[1])) // 2
+        draw.text((PAD, ny), num, font=fn, fill=C["coral"])
+        put(draw, pt, ft, C["text"],
+            PAD + 44, pain_top + i * pain_slot_h + (pain_slot_h - 44) // 2,
+            W - PAD*2 - 44, line_gap=6)
+
+    # ── 구분선 ────────────────────────────────────────────────────
+    div_y = pain_top + len(pts) * pain_slot_h + 18
+    rrect(draw, [PAD, div_y, W - PAD, div_y + 4], radius=2, fill=C["coral"])
+
+    # ── 하단: 선택 포인트 ─────────────────────────────────────────
+    list_headline = c.get("list_headline", "선택할 때 이것만 체크")
+    fl  = F(BOLD, 42)
+    ly  = div_y + 22
+    h2  = put(draw, list_headline, fl, C["text"], PAD, ly, W - PAD*2, line_gap=8)
+
+    items    = c.get("items", [])[:3]
+    ft2      = F(BOLD, 28)
+    fd2      = F(SERIF, 22)
+    item_top = ly + h2 + 16
+    GAP      = 10
+    CIRC_R   = 18
+    avail_h  = H - PAD - item_top
+    box_h    = max((avail_h - GAP * (len(items)-1)) // max(len(items), 1), 80)
+
+    for i, item in enumerate(items):
+        by = item_top + i * (box_h + GAP)
+        rrect(draw, [PAD, by, W - PAD, by + box_h],
+              radius=12, fill=C["white"], outline=C["border"], width=1)
+        cx_ = PAD + 16 + CIRC_R
+        cy_ = by + box_h // 2
+        draw.ellipse([cx_ - CIRC_R, cy_ - CIRC_R, cx_ + CIRC_R, cy_ + CIRC_R],
+                     fill=C["coral_pale"])
+        fn_ = F(BOLD, 14)
+        num = item.get("num", f"0{i+1}")
+        nb_ = draw.textbbox((0, 0), num, font=fn_)
+        draw.text((cx_ - (nb_[2]-nb_[0])//2, cy_ - (nb_[3]-nb_[1])//2 - 1),
+                  num, font=fn_, fill=C["coral"])
+        tx = cx_ + CIRC_R + 12
+        tw = W - PAD - tx - 12
+        _dd = ImageDraw.Draw(Image.new("RGBA", (2, 2)))
+        th = text_height(item.get("title", ""), ft2, tw, _dd, line_gap=3)
+        block_h = th + 4 + text_height(item.get("desc", ""), fd2, tw, _dd, line_gap=3)
+        ty = by + (box_h - block_h) // 2
+        th2 = put(draw, item.get("title", ""), ft2, C["text"], tx, ty, tw, line_gap=3)
+        put(draw, item.get("desc", ""), fd2, C["text_mid"], tx, ty + th2 + 4, tw, line_gap=3)
+
+    indicator(img, 2)
+    return img.convert("RGB")
+
+
+# ══════════════════════════════════════════════════════════════════
+# CARD 3b — REVIEW
+# ══════════════════════════════════════════════════════════════════
+
+def render_review(c: dict, prod_img_path: str = None) -> Image.Image:
+    """실제 구매자 후기 3개"""
+    img = warm_gradient_bg(C["bg"], (248, 244, 232))
+    ghost(img, prod_img_path,
+          target_w=int(W * 0.52), x=int(W * 0.48), y=int(H * 0.48),
+          opacity=0.07)
+
+    draw = ImageDraw.Draw(img)
+    cx   = W // 2
+
+    headline = c.get("headline", "실제 구매자 후기")
+    fh  = F(BOLD, 54)
+    h1  = put(draw, headline, fh, C["text"], PAD, PAD + 44, W - PAD*2, line_gap=10)
+    thin_rule(draw, PAD + 44 + h1 + 20)
+
+    reviews  = c.get("reviews", [])[:3]
+    ft       = F(SERIF, 33)
+    fs_stars = F(BOLD, 24)
+    overall  = strip_emoji(c.get("overall", ""))
+
+    avail_top = PAD + 44 + h1 + 52
+    avail_bot = H - PAD - (60 if overall else 20)
+    avail_h   = avail_bot - avail_top
+    GAP       = 14
+    n         = max(len(reviews), 1)
+    box_h     = max((avail_h - GAP * (n-1)) // n, 100)
+
+    for i, rev in enumerate(reviews):
+        by = avail_top + i * (box_h + GAP)
+        rrect(draw, [PAD, by, W - PAD, by + box_h],
+              radius=18, fill=C["white"], outline=C["border_light"], width=1)
+
+        # 별점
+        rating = max(1, min(int(rev.get("rating", 5)), 5))
+        stars  = "★" * rating + "☆" * (5 - rating)
+        draw.text((PAD + 20, by + 16), stars, font=fs_stars, fill=C["coral"])
+
+        # 리뷰 텍스트 — 따옴표로 감싸기
+        text = f'"{rev.get("text", "")}"'
+        put(draw, text, ft, C["text_mid"],
+            PAD + 20, by + 50, W - PAD*2 - 40, line_gap=8)
+
+    # 전반적 만족도
+    if overall:
+        fo = F(SERIF, 28)
+        ob = draw.textbbox((0, 0), overall, font=fo)
+        ow = ob[2] - ob[0]
+        draw.text((cx - ow//2, avail_bot + 16), overall, font=fo, fill=C["text_muted"])
+
+    indicator(img, 3)
+    return img.convert("RGB")
+
+
+# ══════════════════════════════════════════════════════════════════
 # CARD 3 — LIST
 # ══════════════════════════════════════════════════════════════════
 
@@ -928,7 +1066,9 @@ def render_cta(c: dict, site: str = "ohou",
 
 def render_all_cards(content: dict, output_dir: str,
                      product_image_paths=None,
-                     custom_img_3: str = None) -> list:
+                     custom_img_3: str = None,
+                     card6_img_idx: int = None,
+                     custom_img_6: str = None) -> list:
     """
     product_image_paths: str (단일 경로) 또는 list[str] (여러 뷰)
     카드별로 다른 제품 이미지 뷰를 배정해 시각적 다양성을 높임.
@@ -957,13 +1097,24 @@ def render_all_cards(content: dict, output_dir: str,
         path = imgs[min(idx, len(imgs) - 1)]
         return path if os.path.exists(path) else None
 
+    # card2: COMBO(신규) 또는 PROBLEM(구형 캐시 호환)
+    c2_tag = content.get("card2", {}).get("tag", "PROBLEM")
+    c2_fn  = (lambda: render_combo  (content["card2"], pick(1))) if c2_tag == "COMBO" \
+             else (lambda: render_problem(content["card2"], pick(1)))
+
+    # card3: REVIEW(신규) 또는 LIST(구형 캐시 호환)
+    c3_tag = content.get("card3", {}).get("tag", "LIST")
+    c3_img = custom_img_3 if custom_img_3 else pick(2)
+    c3_fn  = (lambda: render_review(content["card3"], pick(2))) if c3_tag == "REVIEW" \
+             else (lambda: render_list(content["card3"], c3_img))
+
     cards = [
         (1, lambda: render_hook    (content["card1"], pick(0))),
-        (2, lambda: render_problem (content["card2"], pick(1))),
-        (3, lambda: render_list    (content["card3"], custom_img_3 if custom_img_3 else pick(2))),
+        (2, c2_fn),
+        (3, c3_fn),
         (4, lambda: render_stat    (content["card4"], pick(1))),
         (5, lambda: render_solution(content["card5"], pick(0), features)),
-        (6, lambda: render_cta     (content["card6"], site_key, pick(3))),
+        (6, lambda: render_cta     (content["card6"], site_key, custom_img_6 if custom_img_6 and os.path.exists(custom_img_6) else pick(card6_img_idx if card6_img_idx is not None else 3))),
     ]
 
     paths = []

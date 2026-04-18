@@ -378,5 +378,45 @@
     "coupang_url": "",
     "ohouse price": "180,000원",
     "coupang price": ""
+  },
+  {
+    "slug": "io-easy-chair",
+    "title": "[오늘의집 단독] IO EASY CHAIR",
+    "image": "products/io-easy-chair_card_1.png",
+    "purchase_url": "https://ozip.me/HLpUAzR?af",
+    "category": "의자",
+    "coupang_url": "",
+    "ohouse price": "980,000원",
+    "coupang price": ""
+  },
+  {
+    "slug": "flos-265-wall-lamp",
+    "title": "[해외] 플로스 265 벽조명",
+    "image": "products/flos-265-wall-lamp_card_1.png",
+    "purchase_url": "https://ozip.me/8hEZMYl?af",
+    "category": "조명",
+    "coupang_url": "",
+    "ohouse price": "1,510,000원",
+    "coupang price": ""
+  },
+  {
+    "slug": "kungsfors-3tier-kitchen-cart-stainless",
+    "title": "쿵스포르스 3단 주방선반 이동식 작업대 카트 트롤리 스텐",
+    "image": "products/kungsfors-3tier-kitchen-cart-stainless_card_1.png",
+    "purchase_url": "https://ozip.me/EEGvOX3?af",
+    "category": "수납",
+    "coupang_url": "",
+    "ohouse price": "201,300원",
+    "coupang price": ""
+  },
+  {
+    "slug": "bolla-side-table",
+    "title": "Bolla Side Table",
+    "image": "products/bolla-side-table_card_1.png",
+    "purchase_url": "https://ozip.me/XMT2rfh?af",
+    "category": "테이블",
+    "coupang_url": "",
+    "ohouse price": "693,000원",
+    "coupang price": ""
   }
 ]
