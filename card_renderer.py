@@ -92,6 +92,35 @@ def wrap(text, font, max_w, draw):
     return lines
 
 
+def put_italic(base: Image.Image, text: str, font, color, cx: int, y: int,
+               max_w: int, shear: float = 0.22, line_gap: int = 6) -> int:
+    """Faux italic: 각 줄을 임시 캔버스에 그린 뒤 shear 변환해 base에 합성. 중앙 정렬."""
+    dummy_draw = ImageDraw.Draw(Image.new("RGBA", (1, 1)))
+    lines = wrap(text, font, max_w, dummy_draw)
+    dy = 0
+    for line in lines:
+        bb   = dummy_draw.textbbox((0, 0), line, font=font)
+        tw   = bb[2] - bb[0]
+        th   = bb[3] - bb[1]
+        if tw <= 0 or th <= 0:
+            continue
+        extra = int(th * shear) + 2
+        tmp  = Image.new("RGBA", (tw + extra + 4, th + 6), (0, 0, 0, 0))
+        td   = ImageDraw.Draw(tmp)
+        td.text((extra, 3), line, font=font, fill=color)
+        # x-shear: move top pixels right by shear*th
+        sheared = tmp.transform(
+            tmp.size,
+            Image.AFFINE,
+            (1, -shear, shear * th, 0, 1, 0),
+            resample=Image.BILINEAR,
+        )
+        px = cx - (tw + extra) // 2
+        base.alpha_composite(sheared.convert("RGBA"), (px, y + dy))
+        dy += th + line_gap
+    return dy
+
+
 def put(draw, text, font, color, x, y, max_w,
         align="left", line_gap=10, lines=None) -> int:
     lines = lines if lines is not None else wrap(text, font, max_w, draw)
@@ -485,94 +514,104 @@ def render_problem(c: dict, prod_img_path: str = None) -> Image.Image:
 # ══════════════════════════════════════════════════════════════════
 
 def render_list(c: dict, prod_img_path: str = None) -> Image.Image:
-    img = make_bg()
-
-    # 고스트 이미지 — 우하단, 크게
-    ghost(img, prod_img_path,
-          target_w=int(W * 0.65), x=int(W * 0.42), y=int(H * 0.42),
-          opacity=0.13)
-
+    img  = make_bg()
     draw = ImageDraw.Draw(img)
+    cx   = W // 2
 
-    # 헤드라인 + 저장 뱃지
+    # ── 헤드라인 (중앙 정렬) ─────────────────────────────────────
     fh       = F(BOLD, 54)
     headline = c.get("headline", "")
-    save_txt = c.get("save_cta", "저장해두세요")
-    fs_save  = F(HANDWRITE, 26)  # 배민스타일 손글씨 레이블
-    sb       = draw.textbbox((0, 0), save_txt, font=fs_save)
-    sw       = sb[2] - sb[0]
-
     h1 = put(draw, headline, fh, C["text"],
-             PAD, PAD + 44, W - PAD*2 - sw - 56, line_gap=10)
+             cx, PAD + 44, W - PAD * 2, align="center", line_gap=10)
 
-    # 저장 뱃지 (우측)
-    bx1 = W - PAD - sw - 28
-    by1 = PAD + 44
-    bx2 = W - PAD
-    by2 = by1 + 40
-    rrect(draw, [bx1, by1, bx2, by2], radius=20, fill=C["coral_pale"])
-    draw.text((bx1 + 14, by1 + 10), save_txt,
-              font=fs_save, fill=C["coral"])
+    thin_rule(draw, PAD + 44 + h1 + 24)
 
-    thin_rule(draw, PAD + 44 + h1 + 20)
-
-    # 아이템
+    # ── 아이템 박스 ───────────────────────────────────────────────
     items   = c.get("items", [])[:4]
-    start_y = PAD + 44 + h1 + 50
-    avail   = H - start_y - PAD - 48
     n       = max(len(items), 1)
-    item_h  = min(avail // n - 8, 210)
+    BOX_X   = PAD
+    BOX_W   = W - PAD * 2
+    GAP     = 14
+    CIRC_R  = 22
+    PADX    = 20   # box 내부 좌우 패딩
+    PADY    = 16   # box 내부 상하 패딩
+    txt_x   = BOX_X + CIRC_R * 2 + PADX + 14
+    txt_w   = BOX_W - (txt_x - BOX_X) - PADX
 
-    ft = F(BOLD, 34)
-    fd = F(SERIF, 27)   # 항목 설명은 NotoSerif로 가독성
+    ft = F(BOLD, 32)
+    fd = F(SERIF, 26)
 
-    for i, item in enumerate(items):
-        iy  = start_y + i * (item_h + 8)
+    # 각 박스 높이 사전 측정
+    _dd = ImageDraw.Draw(Image.new("RGBA", (2, 2)))
+    box_heights = []
+    for item in items:
+        th = text_height(item.get("title", ""), ft, txt_w, _dd, line_gap=4)
+        dh = text_height(item.get("desc",  ""), fd, txt_w, _dd, line_gap=4)
+        inner_h = max(CIRC_R * 2, th + 6 + dh)
+        box_heights.append((th, dh, inner_h + PADY * 2))
+
+    # 하단 스케치 이미지 높이 확보 (카드 하단 35%)
+    SKETCH_ZONE = int(H * 0.35)
+
+    start_y = PAD + 44 + h1 + 52
+    total_h = sum(bh for _, _, bh in box_heights) + GAP * (n - 1)
+    avail   = H - start_y - SKETCH_ZONE - GAP
+
+    # 전체가 넘치면 균등 축소
+    if total_h > avail:
+        scale   = avail / total_h
+        box_heights = [(th, dh, max(int(bh * scale), CIRC_R * 2 + PADY * 2))
+                       for th, dh, bh in box_heights]
+
+    y = start_y
+    for i, (item, (th, dh, bh)) in enumerate(zip(items, box_heights)):
         num = item.get("num", f"0{i+1}")
-        tx  = PAD + 74
-        tw  = W - PAD - tx - 16
 
-        # 제목·설명 높이 미리 계산 (수직 중앙 정렬용)
-        title_str = item.get("title", "")
-        desc_str  = item.get("desc", "")
-        title_h   = text_height(title_str, ft, tw, draw, line_gap=4)
-        desc_b    = draw.textbbox((0, 0), desc_str, font=fd)
-        desc_h_1  = desc_b[3] - desc_b[1]   # 단일 줄 높이
-        gap       = 8
-        block_h   = title_h + gap + desc_h_1 + 10  # pill 패딩 포함
-        text_top  = iy + (item_h - block_h) // 2
+        # 박스 배경
+        rrect(draw, [BOX_X, y, BOX_X + BOX_W, y + bh],
+              radius=16, fill=C["white"],
+              outline=C["border"], width=1)
 
-        # 번호 원 — 텍스트 블록 중앙에 맞춤
-        cx_ = PAD + 26
-        cy_ = iy + item_h // 2
-        r_  = 24
-        draw.ellipse([cx_-r_, cy_-r_, cx_+r_, cy_+r_],
+        # 번호 원 — 박스 수직 중앙
+        cy_ = y + bh // 2
+        cx_ = BOX_X + PADX + CIRC_R
+        draw.ellipse([cx_ - CIRC_R, cy_ - CIRC_R, cx_ + CIRC_R, cy_ + CIRC_R],
                      fill=C["coral_pale"])
-        fn_ = F(BOLD, 20)
+        fn_ = F(BOLD, 18)
         nb_ = draw.textbbox((0, 0), num, font=fn_)
-        draw.text((cx_ - (nb_[2]-nb_[0])//2,
-                   cy_ - (nb_[3]-nb_[1])//2 - 1),
+        draw.text((cx_ - (nb_[2] - nb_[0]) // 2,
+                   cy_ - (nb_[3] - nb_[1]) // 2 - 1),
                   num, font=fn_, fill=C["coral"])
 
-        # 제목
-        put(draw, title_str, ft, C["text"],
-            tx, text_top, tw, line_gap=4)
+        # 제목 + 설명 — 수직 중앙 정렬
+        block_h = th + 6 + dh
+        text_top = y + (bh - block_h) // 2
+        put(draw, item.get("title", ""), ft, C["text"],
+            txt_x, text_top, txt_w, line_gap=4)
+        put(draw, item.get("desc", ""), fd, C["text_mid"],
+            txt_x, text_top + th + 6, txt_w, line_gap=4)
 
-        # 설명 — pill 배경 + 진한 텍스트
-        desc_y = text_top + title_h + gap
-        desc_w = draw.textbbox((0, 0), desc_str, font=fd)[2] - draw.textbbox((0, 0), desc_str, font=fd)[0]
-        pill_pad_x, pill_pad_y = 14, 5
-        pill_x1 = tx - pill_pad_x
-        pill_y1 = desc_y - pill_pad_y
-        pill_x2 = tx + min(desc_w, tw) + pill_pad_x
-        pill_y2 = desc_y + desc_h_1 + pill_pad_y
-        rrect(draw, [pill_x1, pill_y1, pill_x2, pill_y2],
-              radius=16, fill=C["stone"])
-        put(draw, desc_str, fd, C["text_mid"],
-            tx, desc_y, tw, line_gap=2)
+        y += bh + GAP
 
-        if i < len(items) - 1:
-            thin_rule(draw, iy + item_h + 2, x0=PAD + 60)
+    # ── 하단 스케치 이미지 — 박스 아래 남은 공간 중앙 배치 ─────────
+    if prod_img_path and os.path.exists(prod_img_path):
+        try:
+            sketch   = sketch_effect(prod_img_path)
+            avail_h  = H - PAD - y          # 마지막 박스 아래 ~ 카드 하단
+            max_w    = int(W * 0.88)
+            target_h = min(avail_h - 12, SKETCH_ZONE)
+            sw, sh   = sketch.size
+            scale    = target_h / sh
+            nw, nh   = int(sw * scale), int(sh * scale)
+            if nw > max_w:
+                scale = max_w / sw
+                nw, nh = int(sw * scale), int(sh * scale)
+            sketch = sketch.resize((nw, nh), Image.LANCZOS)
+            px = (W - nw) // 2
+            py = y + (avail_h - nh) // 2   # 남은 공간 수직 중앙
+            img.alpha_composite(sketch, (px, max(py, y + 4)))
+        except Exception:
+            pass
 
     indicator(img, 3)
     return img.convert("RGB")
@@ -667,121 +706,133 @@ def render_stat(c: dict, prod_img_path: str = None) -> Image.Image:
 
 def render_solution(c: dict, prod_img_path: str = None,
                     features: list = None) -> Image.Image:
-    img = make_bg()
+    """75% 너비 대형 이미지 + 상단 좌우 박스가 이미지 중앙으로 수렴 + 하단 박스."""
+    img  = make_bg()
+    draw = ImageDraw.Draw(img)
+    cx   = W // 2
 
-    # 제품 이미지 — 우측: 배경 제거 후 제품만 표시
+    # ── 헤더: 브랜드 + 이름 + 가격 (이미지 위에 모두 배치) ──────
+    brand    = re.sub(r'\s*[\(（].*?[\)）]', '', c.get("brand", "")).strip()
+    raw_name = c.get("product_name", "")
+    name     = re.sub(r'\s*[\(（].*?[\)）]', '', raw_name).strip() or raw_name
+
+    put(draw, brand.upper(), F(BOLD, 20), C["coral"], cx, PAD + 14, W - PAD*2, align="center")
+
+    hdr_w = W - PAD * 4
+    for fs in (38, 32, 27, 23):
+        fn_hdr = F(BOLD, fs)
+        if len(wrap(name, fn_hdr, hdr_w, draw)) <= 2:
+            break
+    h_name  = put(draw, name, fn_hdr, C["text"], cx, PAD + 40, hdr_w,
+                  align="center", line_gap=6)
+    name_bot = PAD + 40 + h_name
+    thin_rule(draw, name_bot + 10, x0=cx - 50, x1=cx + 50)
+
+    # 가격 헤더에 배치
+    price   = c.get("price", "")
+    fp      = F(BOLD, 52)
+    pb      = draw.textbbox((0, 0), price, font=fp)
+    pw, ph  = pb[2] - pb[0], pb[3] - pb[1]
+    price_y = name_bot + 20
+    draw.text((cx - pw // 2, price_y), price, font=fp, fill=C["coral"])
+    hdr_bot = price_y + ph + 8
+    thin_rule(draw, hdr_bot + 8, x0=cx - 50, x1=cx + 50)
+
+    # ── 박스 치수 사전 계산 ──────────────────────────────────────
+    BOX_W    = 340
+    PADX_BOX = 16
+    PADY_BOX = 14
+    NUM_H    = 20
+    ft_box   = F(BOLD, 26)
+    fd_box   = F(SERIF, 22)
+    _dd      = ImageDraw.Draw(Image.new("RGBA", (2, 2)))
+    txt_w_b  = BOX_W - PADX_BOX * 2
+    CONN_R   = 6
+
+    feats = list((features or [])[:3])
+    while len(feats) < 3:
+        feats.append({"title": "", "desc": ""})
+
+    def calc_h(feat):
+        th = text_height(feat.get("title", ""), ft_box, txt_w_b, _dd, line_gap=3)
+        dh = text_height(feat.get("desc",  ""), fd_box, txt_w_b, _dd, line_gap=3)
+        return PADY_BOX + NUM_H + 5 + th + 6 + dh + PADY_BOX
+
+    BOX_H_TOP = max(calc_h(feats[0]), calc_h(feats[1]), 110)
+    BOX_H_BOT = max(calc_h(feats[2]), 100)
+
+    # ── 이미지: 헤더 아래부터 카드 하단까지 최대 크기 ───────────
+    IMG_TARGET_W = int(W * 0.75)
+    img_zone_top = hdr_bot + 12
+    img_zone_bot = H - PAD + 10
+    max_img_h    = img_zone_bot - img_zone_top
+
+    img_bounds = (cx - IMG_TARGET_W // 2, img_zone_top,
+                  cx + IMG_TARGET_W // 2, img_zone_top + min(IMG_TARGET_W, max_img_h))
+
     if prod_img_path and os.path.exists(prod_img_path):
         try:
-            raw   = Image.open(prod_img_path).convert("RGB")
-            pi    = remove_bg(raw)          # 배경 제거 RGBA
-            iw, ih = pi.size
-            # 높이 기준으로 카드 높이에 맞게 스케일
-            scale = H / ih
-            nw, nh = int(iw * scale), H
-            pi = pi.resize((nw, nh), Image.LANCZOS)
-            # 좌측 페이드 (텍스트 영역과 자연스럽게 겹치도록)
-            orig_a = np.array(pi.split()[3]).astype(np.float32)
-            fade_w = min(200, nw // 3)
-            for dx in range(fade_w):
-                orig_a[:, dx] *= dx / fade_w
-            pi.putalpha(Image.fromarray(np.clip(orig_a, 0, 255).astype(np.uint8)))
-            # 우측 중앙 배치
-            px = W - nw + max(0, (nw - int(W * 0.58)) // 2)
-            img.alpha_composite(pi, (px, 0))
+            sketch = sketch_effect(prod_img_path)
+            sw, sh = sketch.size
+            nw = IMG_TARGET_W
+            nh = int(sh * nw / sw)
+            if nh > max_img_h:
+                nh = max_img_h
+                nw = int(sw * nh / sh)
+            sketch = sketch.resize((nw, nh), Image.LANCZOS)
+            sx = cx - nw // 2
+            sy = img_zone_top + (max_img_h - nh) // 2
+            img.alpha_composite(sketch, (sx, sy))
+            img_bounds = (sx, sy, sx + nw, sy + nh)
+            draw = ImageDraw.Draw(img)
         except Exception:
             pass
 
-    # 텍스트 영역 다크 패널 — 배경 이미지 위에 가독성 확보
-    panel_w = int(W * 0.60)
-    panel   = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    pd      = ImageDraw.Draw(panel)
-    # 좌측 불투명 → 우측 투명 그라디언트 패널
-    fade_start = int(panel_w * 0.72)
-    for x in range(panel_w):
-        if x < fade_start:
-            a = 210
-        else:
-            a = int(210 * (1 - (x - fade_start) / (panel_w - fade_start)))
-        pd.line([(x, 0), (x, H)], fill=(18, 16, 12, a))
-    img = Image.alpha_composite(img, panel)
+    img_cx = (img_bounds[0] + img_bounds[2]) // 2
+    img_cy = (img_bounds[1] + img_bounds[3]) // 2
 
-    draw   = ImageDraw.Draw(img)
-    text_w = int(W * 0.54) - PAD
+    # ── 박스 01/02: 상단에서 45% 지점에 박스 상단 배치 ──────────
+    box_top_y = max(hdr_bot + 16, int(H * 0.35))
+    box1_x = PAD
+    box2_x = W - PAD - BOX_W
 
-    # 브랜드
-    brand = re.sub(r'\s*[\(（].*?[\)）]', '', c.get("brand", "")).strip()
-    put(draw, brand, F(REG, 26), (180, 175, 165), PAD, PAD + 52, text_w)
+    # ── 박스 03: 하단 35% 구역 ───────────────────────────────────
+    BOT_ZONE_TOP = int(H * 0.65)          # 702px
+    box3_x = cx - BOX_W // 2
+    box3_y  = BOT_ZONE_TOP + max(10, (H - PAD - 10 - BOX_H_BOT - BOT_ZONE_TOP) // 2)
+    if box3_y + BOX_H_BOT > H - PAD - 10:
+        box3_y = H - PAD - 10 - BOX_H_BOT
 
-    # 제품명 — 길이에 따라 폰트 크기 자동 축소 (최대 2줄)
-    raw_name = c.get("product_name", "")
-    name     = re.sub(r'\s*[\(（].*?[\)）]', '', raw_name).strip() or raw_name
-    for fs in (50, 42, 36, 30):
-        fn    = F(BOLD, fs)
-        lines = wrap(name, fn, text_w, draw)
-        if len(lines) <= 2:
-            break
-    if len(lines) > 2:
-        words = name.split()
-        while len(words) > 1:
-            words.pop()
-            candidate = " ".join(words) + "…"
-            lines = wrap(candidate, fn, text_w, draw)
-            if len(lines) <= 2:
-                name = candidate
-                break
-    h1       = put(draw, name, fn, C["white"], PAD, PAD + 90, text_w, line_gap=10)
-    name_bot = PAD + 90 + h1
+    # ── 연결선: 3개 박스 모두 이미지 중앙으로 독립 연결 ──────────
+    arm1_x = box1_x + BOX_W
+    arm2_x = box2_x
+    arm_y  = box_top_y + BOX_H_TOP // 2
 
-    # highlight 배지
-    highlight = c.get("highlight", "")
-    _noise    = ("배송", "마일리지", "쿠폰", "→", "할인")
-    if any(n in highlight for n in _noise) or len(highlight) > 22:
-        highlight = ""
-    badge_y = name_bot + 20
-    if highlight:
-        fhi = F(REG, 24)
-        hib = draw.textbbox((0, 0), highlight, font=fhi)
-        hiw = hib[2] - hib[0]
-        rrect(draw, [PAD, badge_y, PAD + hiw + 28, badge_y + 40],
-              radius=20, fill=C["coral"])
-        draw.text((PAD + 14, badge_y + 9), highlight,
-                  font=fhi, fill=C["white"])
-        badge_y += 56
+    draw.line([(arm1_x, arm_y),    (img_cx, img_cy)], fill=C["border"], width=2)
+    draw.line([(arm2_x, arm_y),    (img_cx, img_cy)], fill=C["border"], width=2)
+    draw.line([(cx, box3_y),       (img_cx, img_cy)], fill=C["border"], width=2)
 
-    # 핵심 포인트 (card3 items 활용)
-    feats = (features or [])[:3]
-    if feats:
-        thin_rule(draw, badge_y + 8, x0=PAD, x1=int(W * 0.50))
-        fy   = badge_y + 28
-        ft_  = F(BOLD, 30)
-        fd_  = F(SERIF, 25)
-        feat_x_off = int(draw.textbbox((0, 0), "· ", font=ft_)[2])
-        feat_text_w = text_w - feat_x_off
-        for feat in feats:
-            title = feat.get("title", "")
-            desc  = feat.get("desc", "")
-            draw.text((PAD, fy), "·", font=ft_, fill=C["coral"])
-            title_h = put(draw, title, ft_, C["white"],
-                          PAD + feat_x_off, fy, feat_text_w)
-            fy_ = fy + title_h + 4
-            desc_h = put(draw, desc, fd_, (190, 185, 175),
-                         PAD + feat_x_off, fy_, feat_text_w)
-            fy += title_h + 4 + desc_h + 14  # 동적 간격
-        badge_y = fy + 8
+    # 이미지 중앙 수렴 도트 (3개 선 모두 여기로)
+    draw.ellipse([img_cx - CONN_R, img_cy - CONN_R,
+                  img_cx + CONN_R, img_cy + CONN_R],
+                 fill=C["coral_pale"], outline=C["coral"], width=2)
 
-    # 할인율
-    discount = c.get("discount", "")
-    price_y  = badge_y + 24
-    if discount:
-        put(draw, f"{discount} 할인", F(BOLD, 28), C["coral"],
-            PAD, price_y, text_w)
-        price_y += 44
-
-    # 가격
-    price = c.get("price", "")
-    fp    = F(BOLD, 84)
-    price_y = min(price_y, H - fp.size - PAD)  # 카드 하단 이탈 방지
-    draw.text((PAD, price_y), price, font=fp, fill=C["white"])
+    # ── 박스 렌더 ──────────────────────────────────────────────────
+    box_defs = [
+        (feats[0], box1_x, box_top_y, BOX_H_TOP, "01"),
+        (feats[1], box2_x, box_top_y, BOX_H_TOP, "02"),
+        (feats[2], box3_x, box3_y,    BOX_H_BOT, "03"),
+    ]
+    for feat, bx, by, bh, num in box_defs:
+        rrect(draw, [bx, by, bx + BOX_W, by + bh],
+              radius=14, fill=C["white"], outline=C["border"], width=1)
+        draw.text((bx + PADX_BOX, by + PADY_BOX), num,
+                  font=F(BOLD, 15), fill=C["coral"])
+        ty = by + PADY_BOX + NUM_H + 5
+        th = put(draw, feat.get("title", ""), ft_box, C["text"],
+                 bx + PADX_BOX, ty, txt_w_b, line_gap=3)
+        put(draw, feat.get("desc", ""), fd_box, C["text_mid"],
+            bx + PADX_BOX, ty + th + 6, txt_w_b, line_gap=3)
 
     indicator(img, 5)
     return img.convert("RGB")
@@ -876,7 +927,8 @@ def render_cta(c: dict, site: str = "ohou",
 # ══════════════════════════════════════════════════════════════════
 
 def render_all_cards(content: dict, output_dir: str,
-                     product_image_paths=None) -> list:
+                     product_image_paths=None,
+                     custom_img_3: str = None) -> list:
     """
     product_image_paths: str (단일 경로) 또는 list[str] (여러 뷰)
     카드별로 다른 제품 이미지 뷰를 배정해 시각적 다양성을 높임.
@@ -908,7 +960,7 @@ def render_all_cards(content: dict, output_dir: str,
     cards = [
         (1, lambda: render_hook    (content["card1"], pick(0))),
         (2, lambda: render_problem (content["card2"], pick(1))),
-        (3, lambda: render_list    (content["card3"], pick(2))),
+        (3, lambda: render_list    (content["card3"], custom_img_3 if custom_img_3 else pick(2))),
         (4, lambda: render_stat    (content["card4"], pick(1))),
         (5, lambda: render_solution(content["card5"], pick(0), features)),
         (6, lambda: render_cta     (content["card6"], site_key, pick(3))),

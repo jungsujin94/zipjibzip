@@ -154,10 +154,11 @@ def _promote_best_card1_image(paths: list) -> list:
     return paths
 
 
-def run(url: str, force_img_idx: int = None):
+def run(url: str, force_img_idx: int = None, custom_img_path: str = None, custom_img_3: str = None):
     """
-    force_img_idx: 0-based. 지정 시 birefnet 선별을 건너뛰고 해당 인덱스 이미지를 card1에 사용.
-                  캐시된 content JSON이 있으면 AI 추출도 생략.
+    force_img_idx:  0-based. 지정 시 birefnet 선별을 건너뛰고 해당 인덱스 이미지를 card1에 사용.
+                   캐시된 content JSON이 있으면 AI 추출도 생략.
+    custom_img_path: 로컬 이미지 파일 경로. 지정 시 이 파일을 card1 이미지로 사용 (스크래핑 이미지 대체).
     """
     print("\n" + "=" * 60, flush=True)
     print("  카드뉴스 생성 시작", flush=True)
@@ -184,7 +185,11 @@ def run(url: str, force_img_idx: int = None):
     # 4. 제품 이미지 여러 장 다운로드 (최대 5장)
     product_image_paths = download_product_images(scraped_data, url, max_images=8)
 
-    if force_img_idx is not None:
+    if custom_img_path:
+        # 커스텀 이미지: 로컬 파일을 card1 이미지로 사용 (정리 대상 제외)
+        print(f"[pipeline] 카드1 이미지: 커스텀 파일 사용 ({custom_img_path})", flush=True)
+        product_image_paths.insert(0, custom_img_path)
+    elif force_img_idx is not None:
         # retry N: birefnet 건너뛰고 지정 인덱스를 card1 이미지로
         idx = min(force_img_idx, len(product_image_paths) - 1)
         if idx != 0:
@@ -197,7 +202,7 @@ def run(url: str, force_img_idx: int = None):
     # 5. Claude로 카드 콘텐츠 생성 (캐시 있으면 재사용)
     slug_guess = scraped_data.get("name", "")
     cached_content = None
-    if force_img_idx is not None:
+    if force_img_idx is not None or custom_img_path is not None:
         # 같은 URL의 캐시 파일 탐색 (output 폴더의 _content.json 중 product_url 일치)
         for fname in os.listdir(OUTPUT_DIR):
             if fname.endswith("_content.json"):
@@ -220,7 +225,7 @@ def run(url: str, force_img_idx: int = None):
 
     # 6. 카드뉴스 PNG 렌더링
     print(f"[pipeline] 카드뉴스 이미지 생성 중...", flush=True)
-    output_paths = render_all_cards(card_content, OUTPUT_DIR, product_image_paths)
+    output_paths = render_all_cards(card_content, OUTPUT_DIR, product_image_paths, custom_img_3=custom_img_3)
 
     # 7. 카드 콘텐츠 JSON 저장
     slug = card_content.get("product_slug", "product")
@@ -232,8 +237,10 @@ def run(url: str, force_img_idx: int = None):
     # 8. 인스타 캡션 txt 저장
     caption_path = _write_caption(card_content, original_url, OUTPUT_DIR)
 
-    # 9. 임시 이미지 파일 정리
+    # 9. 임시 이미지 파일 정리 (커스텀 이미지는 삭제 제외)
     for p in product_image_paths:
+        if p == custom_img_path:
+            continue  # 사용자 파일 보존
         if os.path.exists(p):
             os.unlink(p)
 
@@ -300,11 +307,17 @@ if __name__ == "__main__":
     parser.add_argument("url", help="제품 URL")
     parser.add_argument("--img", type=int, default=None,
                         help="card1에 쓸 이미지 번호 (1-based). retry N 용도.")
+    parser.add_argument("--custom-img", type=str, default=None,
+                        help="card1에 쓸 로컬 이미지 파일 경로.")
+    parser.add_argument("--custom-img-3", type=str, default=None,
+                        help="card3 하단 스케치에 쓸 로컬 이미지 파일 경로.")
     args = parser.parse_args()
 
     force_idx = (args.img - 1) if args.img is not None else None
     try:
-        run(args.url.strip(), force_img_idx=force_idx)
+        run(args.url.strip(), force_img_idx=force_idx,
+            custom_img_path=args.custom_img,
+            custom_img_3=getattr(args, 'custom_img_3', None))
     except Exception as e:
         print(f"\n오류 발생: {e}", file=sys.stderr)
         sys.exit(1)

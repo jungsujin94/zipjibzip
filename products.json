@@ -1,15 +1,5 @@
 [
   {
-    "slug": "artemide-nessino-table-lamp",
-    "title": "아르테미데 네시노 테이블 램프",
-    "image": "products/artemide-nessino-table-lamp_card_1.png",
-    "purchase_url": "https://ozip.me/HEXqc71?af",
-    "coupang_url": "https://link.coupang.com/a/eoxYEu",
-    "category": "조명",
-    "ohouse price": "248,160원",
-    "coupang price": "250,000원"
-  },
-  {
     "slug": "coldpog-nugu-easy-chair-blue-check",
     "title": "콜드포그 누구 이지체어 블루체크",
     "image": "products/coldpog-nugu-easy-chair-blue-check_card_1.png",
@@ -338,5 +328,55 @@
     "coupang_url": "https://link.coupang.com/a/epG3lr",
     "ohouse price": "469,000원",
     "coupang price": "469,000원"
+  },
+  {
+    "slug": "bay-leather-sofa",
+    "title": "베이 가죽 소파",
+    "image": "products/bay-leather-sofa_card_1.png",
+    "purchase_url": "https://ozip.me/TTewVqY?af",
+    "category": "소파",
+    "coupang_url": "",
+    "ohouse price": "5,020,000원",
+    "coupang price": ""
+  },
+  {
+    "slug": "flatpoint-plaid-rug-s",
+    "title": "플래드 러그 (S)",
+    "image": "products/flatpoint-plaid-rug-s_card_1.png",
+    "purchase_url": "https://ozip.me/Dheagpp?af",
+    "category": "소품",
+    "coupang_url": "",
+    "ohouse price": "1,180,000원",
+    "coupang price": ""
+  },
+  {
+    "slug": "pave-square-sofa-table",
+    "title": "studio / 페이브 스퀘어 소파테이블",
+    "image": "products/pave-square-sofa-table_card_1.png",
+    "purchase_url": "https://ozip.me/PcHtEjw?af",
+    "category": "테이블",
+    "coupang_url": "",
+    "ohouse price": "350,000원",
+    "coupang price": ""
+  },
+  {
+    "slug": "coldfog-bar-chair",
+    "title": "콜드포그 BAR CHAIR 바체어",
+    "image": "products/coldfog-bar-chair_card_1.png",
+    "purchase_url": "https://ozip.me/MORqI9e?af",
+    "category": "의자",
+    "coupang_url": "",
+    "ohouse price": "490,000원",
+    "coupang price": ""
+  },
+  {
+    "slug": "liquified-persian-rug",
+    "title": "리퀴파이드 페르시안 러그 4colors 3sizes",
+    "image": "products/liquified-persian-rug_card_1.png",
+    "purchase_url": "https://ozip.me/bgoxUp6?af",
+    "category": "소품",
+    "coupang_url": "",
+    "ohouse price": "180,000원",
+    "coupang price": ""
   }
 ]

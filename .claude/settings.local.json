@@ -34,7 +34,12 @@
       "Bash(python pipeline.py \"https://ozip.me/jDRZQiM?af\")",
       "Bash(python pipeline.py \"https://ozip.me/rPUqyET?af\")",
       "Bash(node:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Skill(cardnews)",
+      "Skill(cardnews:*)",
+      "Bash(ls C:/cardnews/output/liquified-persian-rug_img_*.*)",
+      "Bash(ls C:/cardnews/output/liquified-persian-rug_img_*)",
+      "Bash(ls C:/cardnews/images/saytoucherug*)"
     ]
   }
 }
