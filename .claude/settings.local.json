@@ -40,7 +40,20 @@
       "Bash(ls C:/cardnews/output/liquified-persian-rug_img_*.*)",
       "Bash(ls C:/cardnews/output/liquified-persian-rug_img_*)",
       "Bash(ls C:/cardnews/images/saytoucherug*)",
-      "WebFetch(domain:store.ohou.se)"
+      "WebFetch(domain:store.ohou.se)",
+      "WebFetch(domain:www.ohou.se)",
+      "WebSearch",
+      "Bash(pip install *)",
+      "Bash(C:/Users/User/AppData/Local/Programs/Python/Python311/python.exe -m pip install pilmoji -q)",
+      "Bash(C:/Users/User/AppData/Local/Programs/Python/Python311/python.exe -c ' *)",
+      "Bash(\"C:/Program Files/Python39/python.exe\" -m pip install pilmoji -q)",
+      "Bash(\"C:/Program Files/Python39/python.exe\" -m pip install pilmoji)",
+      "Read(//c/Users/User/**)",
+      "Bash(wait)",
+      "Bash(ls C:/cardnews/output/maret-wood-porcelain*)"
+    ],
+    "additionalDirectories": [
+      "C:\\cardnews\\output"
     ]
   }
 }
