@@ -14,6 +14,8 @@ Workflow:
 import json
 import sys
 from pathlib import Path
+from datetime import date, timedelta
+from PIL import Image
 
 PRODUCTS_DIR = Path("products")
 PRODUCTS_JSON = Path("products.json")
@@ -67,7 +69,25 @@ def load_products(regen: bool) -> list[dict]:
         return json.load(f)
 
 
-def build_card(p: dict) -> str:
+def make_sticker_nobg():
+    """Strip white background from newsticker.png → save newsticker_nobg.png."""
+    src = Path("images/newsticker.png")
+    dst = Path("images/newsticker_nobg.png")
+    if not src.exists():
+        return
+    img = Image.open(src).convert("RGBA")
+    pixels = img.getdata()
+    new_pixels = []
+    for r, g, b, a in pixels:
+        if r > 200 and g > 200 and b > 200:
+            new_pixels.append((r, g, b, 0))
+        else:
+            new_pixels.append((r, g, b, a))
+    img.putdata(new_pixels)
+    img.save(dst, format="PNG")
+
+
+def build_card(p: dict, order: int = 0, is_new: bool = False) -> str:
     ohouse_url  = p.get("purchase_url", "#")
     img         = p.get("image", "")
     title       = p.get("title", "")
@@ -108,11 +128,14 @@ def build_card(p: dict) -> str:
           </a>
         </div>"""
 
+    new_badge = '<img src="images/newsticker_nobg.png" class="new-badge" alt="NEW">' if is_new else ""
+
     return f"""
-    <div class="card" data-category="{category}" data-price="{price_num}">
+    <div class="card" data-category="{category}" data-price="{price_num}" data-order="{order}">
       <a class="img-link" href="{ohouse_url}" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="{img}" alt="{title}" loading="lazy">
+          {new_badge}
         </div>
       </a>
       <div class="info">
@@ -134,8 +157,21 @@ def build_tabs(products: list[dict]) -> str:
     return tabs
 
 
+def is_recent(p: dict) -> bool:
+    """True if the product image was created/modified today or yesterday."""
+    img = Path(p.get("image", ""))
+    if not img.exists():
+        return False
+    mtime = date.fromtimestamp(img.stat().st_mtime)
+    today = date.today()
+    return mtime >= today - timedelta(days=1)
+
+
 def generate_html(products: list[dict]) -> str:
-    cards = "".join(build_card(p) for p in products)
+    cards = "".join(
+        build_card(p, order=i, is_new=is_recent(p))
+        for i, p in enumerate(products)
+    )
     tabs = build_tabs(products)
     return f"""<!DOCTYPE html>
 <html lang="ko">
@@ -278,13 +314,24 @@ def generate_html(products: list[dict]) -> str:
     }}
 
     .img-wrap {{
+      position: relative;
       width: 100%;
       aspect-ratio: 1 / 1;
       overflow: hidden;
       background: #f0ede8;
     }}
 
-    .img-wrap img {{
+    .new-badge {{
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 78px;
+      height: auto;
+      pointer-events: none;
+      z-index: 2;
+    }}
+
+    .img-wrap img:not(.new-badge) {{
       width: 100%;
       height: 100%;
       object-fit: contain;
@@ -292,7 +339,7 @@ def generate_html(products: list[dict]) -> str:
       transition: transform .3s ease;
     }}
 
-    .card:hover .img-wrap img {{
+    .card:hover .img-wrap img:not(.new-badge) {{
       transform: scale(1.04);
     }}
 
@@ -499,6 +546,7 @@ def generate_html(products: list[dict]) -> str:
       </div>
     </div>
     <div class="sort-controls">
+      <button class="sort-btn" data-sort="newest">최신순 ★</button>
       <button class="sort-btn" data-sort="asc">가격 낮은순 ↑</button>
       <button class="sort-btn" data-sort="desc">가격 높은순 ↓</button>
     </div>
@@ -528,6 +576,11 @@ def generate_html(products: list[dict]) -> str:
         const visible = cards.filter(c => !c.classList.contains('hidden'));
         const hidden = cards.filter(c => c.classList.contains('hidden'));
         visible.sort((a, b) => {{
+          if (currentSort === 'newest') {{
+            const oa = parseInt(a.dataset.order) || 0;
+            const ob = parseInt(b.dataset.order) || 0;
+            return ob - oa;
+          }}
           const pa = parseInt(a.dataset.price) || 0;
           const pb = parseInt(b.dataset.price) || 0;
           return currentSort === 'asc' ? pa - pb : pb - pa;
@@ -585,6 +638,7 @@ def main():
         print("No products found in products/. Add *_card_5.png images and re-run.")
         return
 
+    make_sticker_nobg()
     html = generate_html(products)
     OUTPUT_HTML.write_text(html, encoding="utf-8")
     print(f"Generated {OUTPUT_HTML} with {len(products)} products.")

@@ -139,13 +139,24 @@
     }
 
     .img-wrap {
+      position: relative;
       width: 100%;
       aspect-ratio: 1 / 1;
       overflow: hidden;
       background: #f0ede8;
     }
 
-    .img-wrap img {
+    .new-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 78px;
+      height: auto;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .img-wrap img:not(.new-badge) {
       width: 100%;
       height: 100%;
       object-fit: contain;
@@ -153,7 +164,7 @@
       transition: transform .3s ease;
     }
 
-    .card:hover .img-wrap img {
+    .card:hover .img-wrap img:not(.new-badge) {
       transform: scale(1.04);
     }
 
@@ -366,18 +377,21 @@
     <button class="tab" data-filter="침대">침대</button>
     <button class="tab" data-filter="책상">책상</button>
     <button class="tab" data-filter="가전">가전</button>
+    <button class="tab" data-filter="침구">침구</button>
       </div>
     </div>
     <div class="sort-controls">
+      <button class="sort-btn" data-sort="newest">최신순 ★</button>
       <button class="sort-btn" data-sort="asc">가격 낮은순 ↑</button>
       <button class="sort-btn" data-sort="desc">가격 높은순 ↓</button>
     </div>
   </div>
   <div class="grid">
-    <div class="card" data-category="의자" data-price="890000">
+    <div class="card" data-category="의자" data-price="890000" data-order="0">
       <a class="img-link" href="https://ozip.me/uEh0J5D?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/coldpog-nugu-easy-chair-blue-check_card_1.png" alt="콜드포그 누구 이지체어 블루체크" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -393,10 +407,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="테이블" data-price="149000">
+    <div class="card" data-category="테이블" data-price="149000" data-order="1">
       <a class="img-link" href="https://ozip.me/51CVYx8?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/lebing-tempered-glass-floor-table-1000_card_1.png" alt="레빙 강화유리 좌식 테이블 1000" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -412,10 +427,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="수납" data-price="149000">
+    <div class="card" data-category="수납" data-price="149000" data-order="2">
       <a class="img-link" href="https://ozip.me/d0vX0QI?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/mobrick-no-drill-wall-cabinet_card_1.png" alt="모브릭 무타공 벽 수납장" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -431,10 +447,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="테이블" data-price="744000">
+    <div class="card" data-category="테이블" data-price="744000" data-order="3">
       <a class="img-link" href="https://ozip.me/IpDmnKH?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/nordic-wood-round-dining-table-retro-blue_card_1.png" alt="노르딕 원목 원형 다이닝 테이블 레트로 블루" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -450,10 +467,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="소품" data-price="76900">
+    <div class="card" data-category="소품" data-price="76900" data-order="4">
       <a class="img-link" href="https://ozip.me/75jtAuw?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/retro-antique-round-pendulum-clock-green_card_1.png" alt="레트로 앤틱 원형 진자시계 그린" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -469,10 +487,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="수납" data-price="199000">
+    <div class="card" data-category="수납" data-price="199000" data-order="5">
       <a class="img-link" href="https://ozip.me/Iwk7fqS?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/on-lofi-3drawer-storage-800_card_1.png" alt="온 로피 3단 서랍장 800" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -488,10 +507,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="수납" data-price="373500">
+    <div class="card" data-category="수납" data-price="373500" data-order="6">
       <a class="img-link" href="https://ozip.me/bL5jlyR?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/rareraw-system000-standard-shelving-04_card_1.png" alt="레어로우 시스템000 스탠다드 선반 04" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -507,10 +527,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="소품" data-price="25000">
+    <div class="card" data-category="소품" data-price="25000" data-order="7">
       <a class="img-link" href="https://ozip.me/pAMCYNI?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/glass-block-wave-poster_card_1.png" alt="글라스블록 포스터 Glass Block Wave Type" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -526,10 +547,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="소품" data-price="1240000">
+    <div class="card" data-category="소품" data-price="1240000" data-order="8">
       <a class="img-link" href="https://ozip.me/Z9hYoPF?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/ardenne-mirror-large_card_1.png" alt="아르덴 미러 라지 (L)" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -545,10 +567,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="의자" data-price="149000">
+    <div class="card" data-category="의자" data-price="149000" data-order="9">
       <a class="img-link" href="https://ozip.me/axDNCda?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/bear-hug-recliner-computer-chair_card_1.png" alt="베어허그 리클라이너 컴퓨터 의자 책상" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -571,10 +594,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="의자" data-price="139800">
+    <div class="card" data-category="의자" data-price="139800" data-order="10">
       <a class="img-link" href="https://ozip.me/yeWpzw1?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/century-ce550-desk-chair_card_1.png" alt="센추리 CE550 책상 학생 사무실 컴퓨터 의자 체어 인조가죽" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -597,10 +621,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="수납" data-price="289000">
+    <div class="card" data-category="수납" data-price="289000" data-order="11">
       <a class="img-link" href="https://ozip.me/FXtLzgm?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/stilla-walnut-midcentury-modular-tv-stand_card_1.png" alt="스틸라 원목 미드센츄리 모듈 거실장" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -623,10 +648,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="소품" data-price="89000">
+    <div class="card" data-category="소품" data-price="89000" data-order="12">
       <a class="img-link" href="https://ozip.me/4kdK8tC?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/wood-room-divider-partition-screen_card_1.png" alt="우드 룸 디바이더 공간분리 가벽 파티션 스크린" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -649,10 +675,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="조명" data-price="119900">
+    <div class="card" data-category="조명" data-price="119900" data-order="13">
       <a class="img-link" href="https://ozip.me/LWyYQYw?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/antique-floor-lamp-hanji-lighting_card_1.png" alt="앤틱 플로어 램프 한지조명 거실 인테리어 조명" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -675,10 +702,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="소품" data-price="49500">
+    <div class="card" data-category="소품" data-price="49500" data-order="14">
       <a class="img-link" href="https://ozip.me/Z7zUUEt?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/analog-weather-station-aluminum-bearcraft_card_1.png" alt="아날로그 웨더스테이션 알루미늄 쇠테리어 온도 기압 습도계" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -694,10 +722,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="소품" data-price="65900">
+    <div class="card" data-category="소품" data-price="65900" data-order="15">
       <a class="img-link" href="https://ozip.me/VXEQ9bS" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/radata-hotel-towel-10p-200g_card_1.png" alt="국내제작 코마사 40수 200g 고중량 호텔수건 10장" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -713,10 +742,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="조명" data-price="120000">
+    <div class="card" data-category="조명" data-price="120000" data-order="16">
       <a class="img-link" href="https://ozip.me/6rd3eDw?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/wave-bracket-wall-light_card_1.png" alt="Wave Bracket 웨이브 벽등" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -732,10 +762,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="의자" data-price="285000">
+    <div class="card" data-category="의자" data-price="285000" data-order="17">
       <a class="img-link" href="https://ozip.me/Wd1SQGc?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/nordic-single-sofa-fabric-chair_card_1.png" alt="북유럽 싱글 소파 패브릭 체어 1인 안락의자" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -751,10 +782,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="소파" data-price="499000">
+    <div class="card" data-category="소파" data-price="499000" data-order="18">
       <a class="img-link" href="https://ozip.me/gLxCMbW?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/benevento-modern-armless-quilting-sofa-bed_card_1.png" alt="베네벤토 모던 암리스 퀼팅 소파베드 침대 겸용 소파 패브릭 침대 소파" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -770,10 +802,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="테이블" data-price="580000">
+    <div class="card" data-category="테이블" data-price="580000" data-order="19">
       <a class="img-link" href="https://ozip.me/7IF7vKK?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/nordic-mosaic-tile-sofa-table-modern-white_card_1.png" alt="노르딕 모자이크타일 모던 화이트 소파테이블 사이드테이블" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -789,10 +822,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="테이블" data-price="685000">
+    <div class="card" data-category="테이블" data-price="685000" data-order="20">
       <a class="img-link" href="https://ozip.me/Vqedoim?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/oar-wood-porcelain-ceramic-round-dining-table-1200_card_1.png" alt="오아르마 원목 포세린 세라믹 2인용 4인용 원형 원목 식탁 테이블 1200" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -808,10 +842,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="소품" data-price="149900">
+    <div class="card" data-category="소품" data-price="149900" data-order="21">
       <a class="img-link" href="https://ozip.me/EncB0Zf?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/mat-silver-steel-magnet-board-sliding-mirror_card_1.png" alt="매트실버 스텐 자석보드 슬라이딩거울 인테리어 벽거울" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -827,10 +862,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="수납" data-price="78000">
+    <div class="card" data-category="수납" data-price="78000" data-order="22">
       <a class="img-link" href="https://ozip.me/lUIsXpl?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/oho-speaker-lp-rack-medium_card_1.png" alt="[오늘의집 단독] Oho 스피커 LP랙 중형 ESF-LPR1M" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -846,10 +882,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="수납" data-price="158000">
+    <div class="card" data-category="수납" data-price="158000" data-order="23">
       <a class="img-link" href="https://ozip.me/rdGDvuP?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/casey-5tier-midcentury-shelf_card_1.png" alt="케이시 5단 미드센츄리 선반 높은 진열장 책장" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -865,10 +902,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="침대" data-price="699000">
+    <div class="card" data-category="침대" data-price="699000" data-order="24">
       <a class="img-link" href="https://ozip.me/B2V0JO3?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/the-cruise-floating-wood-platform-bed-slk-g68_card_1.png" alt="더크루즈 플로팅 원목 평상형 무헤드 프레임 호텔 침대 SLK_G68" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -891,10 +929,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="책상" data-price="179000">
+    <div class="card" data-category="책상" data-price="179000" data-order="25">
       <a class="img-link" href="https://ozip.me/otwzkJP?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/refine-partition-desk-bookshelf-set_card_1.png" alt="refine / 공간을 분리하는 파티션 책상/책장세트, 1200/1400" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -910,10 +949,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="테이블" data-price="1100000">
+    <div class="card" data-category="테이블" data-price="1100000" data-order="26">
       <a class="img-link" href="https://ozip.me/pkCaY7p?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/yume-ceramic-wood-island-table_card_1.png" alt="유메 세라믹 원목 아일랜드 식탁" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -929,10 +969,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="가전" data-price="2750000">
+    <div class="card" data-category="가전" data-price="2750000" data-order="27">
       <a class="img-link" href="https://ozip.me/oh2Kxag?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/stylevision-tv-trolley-55-oled_card_1.png" alt="스타일비전 TV | 트롤리 55" OLED" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -948,10 +989,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="침대" data-price="1089000">
+    <div class="card" data-category="침대" data-price="1089000" data-order="28">
       <a class="img-link" href="https://ozip.me/9SFoEfW" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/milkroll-fabric-bed-frame_card_1.png" alt="밀크롤 패브릭 침대 프레임 호텔식 신혼부부 더블 퀸 라지킹 이스턴킹 D/Q/K/LK/EK" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -967,10 +1009,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="소품" data-price="139900">
+    <div class="card" data-category="소품" data-price="139900" data-order="29">
       <a class="img-link" href="https://ozip.me/kaCzmya?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/dulton-bonox-double-face-round-wall-clock_card_1.png" alt="DULTON 양면 원형 벽시계 금속 소형 레트로 시계 BONOX" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -993,10 +1036,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="소품" data-price="70000">
+    <div class="card" data-category="소품" data-price="70000" data-order="30">
       <a class="img-link" href="https://ozip.me/JWqcmFU?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/mesh-net-bag-fruit-basket_card_1.png" alt="메쉬그물가방 과일바구니 다용도가방" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -1012,10 +1056,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="테이블" data-price="143000">
+    <div class="card" data-category="테이블" data-price="143000" data-order="31">
       <a class="img-link" href="https://ozip.me/PK9aAMR?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/frs-black-ash-bed-side-table_card_1.png" alt="[오늘의집 단독] FRS 에프알에스 블랙 애쉬 원목 베드 사이드 테이블" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -1031,10 +1076,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="소파" data-price="469000">
+    <div class="card" data-category="소파" data-price="469000" data-order="32">
       <a class="img-link" href="https://ozip.me/2fzr8Qs?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/day-3seater-fabric-sofa-bed_card_1.png" alt="데이 3인 패브릭 풀커버 모듈 압축 소파베드 4colors" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -1057,10 +1103,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="소파" data-price="5020000">
+    <div class="card" data-category="소파" data-price="5020000" data-order="33">
       <a class="img-link" href="https://ozip.me/TTewVqY?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/bay-leather-sofa_card_1.png" alt="베이 가죽 소파" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -1076,10 +1123,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="소품" data-price="1180000">
+    <div class="card" data-category="소품" data-price="1180000" data-order="34">
       <a class="img-link" href="https://ozip.me/Dheagpp?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/flatpoint-plaid-rug-s_card_1.png" alt="플래드 러그 (S)" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -1095,10 +1143,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="테이블" data-price="350000">
+    <div class="card" data-category="테이블" data-price="350000" data-order="35">
       <a class="img-link" href="https://ozip.me/PcHtEjw?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/pave-square-sofa-table_card_1.png" alt="studio / 페이브 스퀘어 소파테이블" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -1114,10 +1163,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="의자" data-price="490000">
+    <div class="card" data-category="의자" data-price="490000" data-order="36">
       <a class="img-link" href="https://ozip.me/MORqI9e?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/coldfog-bar-chair_card_1.png" alt="콜드포그 BAR CHAIR 바체어" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -1133,10 +1183,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="소품" data-price="180000">
+    <div class="card" data-category="소품" data-price="180000" data-order="37">
       <a class="img-link" href="https://ozip.me/bgoxUp6?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/liquified-persian-rug_card_1.png" alt="리퀴파이드 페르시안 러그 4colors 3sizes" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -1152,10 +1203,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="의자" data-price="980000">
+    <div class="card" data-category="의자" data-price="980000" data-order="38">
       <a class="img-link" href="https://ozip.me/HLpUAzR?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/io-easy-chair_card_1.png" alt="[오늘의집 단독] IO EASY CHAIR" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -1171,10 +1223,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="조명" data-price="1510000">
+    <div class="card" data-category="조명" data-price="1510000" data-order="39">
       <a class="img-link" href="https://ozip.me/8hEZMYl?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/flos-265-wall-lamp_card_1.png" alt="[해외] 플로스 265 벽조명" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -1190,10 +1243,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="수납" data-price="201300">
+    <div class="card" data-category="수납" data-price="201300" data-order="40">
       <a class="img-link" href="https://ozip.me/EEGvOX3?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/kungsfors-3tier-kitchen-cart-stainless_card_1.png" alt="쿵스포르스 3단 주방선반 이동식 작업대 카트 트롤리 스텐" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -1216,10 +1270,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="테이블" data-price="693000">
+    <div class="card" data-category="테이블" data-price="693000" data-order="41">
       <a class="img-link" href="https://ozip.me/XMT2rfh?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/bolla-side-table_card_1.png" alt="Bolla Side Table" loading="lazy">
+          
         </div>
       </a>
       <div class="info">
@@ -1235,10 +1290,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="테이블" data-price="2700000">
+    <div class="card" data-category="테이블" data-price="2700000" data-order="42">
       <a class="img-link" href="https://ozip.me/RGYRj3F?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/color-round-dining-table_card_1.png" alt="[단독] COLOR ROUND DINING TABLE" loading="lazy">
+          <img src="images/newsticker_nobg.png" class="new-badge" alt="NEW">
         </div>
       </a>
       <div class="info">
@@ -1254,10 +1310,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="소품" data-price="29000">
+    <div class="card" data-category="소품" data-price="29000" data-order="43">
       <a class="img-link" href="https://ozip.me/stCjrPO?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/willow-vintage-3fold-wall-mirror_card_1.png" alt="월로우 빈티지 3단 벽 걸이 거울 화장대 욕실 인테리어 접이식 거울" loading="lazy">
+          <img src="images/newsticker_nobg.png" class="new-badge" alt="NEW">
         </div>
       </a>
       <div class="info">
@@ -1273,10 +1330,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="가전" data-price="1300000">
+    <div class="card" data-category="가전" data-price="1300000" data-order="44">
       <a class="img-link" href="https://ozip.me/bm3hAbS?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/breville-barista-express-impress-bes876_card_1.png" alt="바리스타 익스프레스 임프레스 BES876" loading="lazy">
+          <img src="images/newsticker_nobg.png" class="new-badge" alt="NEW">
         </div>
       </a>
       <div class="info">
@@ -1292,10 +1350,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="수납" data-price="297000">
+    <div class="card" data-category="수납" data-price="297000" data-order="45">
       <a class="img-link" href="https://ozip.me/nq8Dvq1?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/house-kitchen-rack-700-wine_card_1.png" alt="하우스 키친랙 700 (와인랙포함)" loading="lazy">
+          <img src="images/newsticker_nobg.png" class="new-badge" alt="NEW">
         </div>
       </a>
       <div class="info">
@@ -1311,10 +1370,191 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="수납" data-price="950000">
+    <div class="card" data-category="소품" data-price="58000" data-order="46">
+      <a class="img-link" href="https://ozip.me/9P11Tx6?af" target="_blank" rel="noopener noreferrer">
+        <div class="img-wrap">
+          <img src="products/selfie-cat-poster-mirror_card_1.png" alt="[오늘의집 단독] selfie cat poster mirror 포스터미러" loading="lazy">
+          <img src="images/newsticker_nobg.png" class="new-badge" alt="NEW">
+        </div>
+      </a>
+      <div class="info">
+        <p class="title">[오늘의집 단독] selfie cat poster mirror 포스터미러</p>
+        <div class="cta-group">
+          <a class="cta cta-ohouse" href="https://ozip.me/9P11Tx6?af" target="_blank" rel="noopener noreferrer">
+            <div class="cta-top">
+              <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
+            <span class="cta-price">58,000원</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card" data-category="소품" data-price="56000" data-order="47">
+      <a class="img-link" href="https://ozip.me/MvO58SR?af" target="_blank" rel="noopener noreferrer">
+        <div class="img-wrap">
+          <img src="products/kara-blossom-candle_card_1.png" alt="카라블로썸 캔들" loading="lazy">
+          <img src="images/newsticker_nobg.png" class="new-badge" alt="NEW">
+        </div>
+      </a>
+      <div class="info">
+        <p class="title">카라블로썸 캔들</p>
+        <div class="cta-group">
+          <a class="cta cta-ohouse" href="https://ozip.me/MvO58SR?af" target="_blank" rel="noopener noreferrer">
+            <div class="cta-top">
+              <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
+            <span class="cta-price">56,000원</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card" data-category="소품" data-price="101700" data-order="48">
+      <a class="img-link" href="https://ozip.me/DR2DBDT?af" target="_blank" rel="noopener noreferrer">
+        <div class="img-wrap">
+          <img src="products/mujagi-1in-hansang-set_card_1.png" alt="1인 한상 세트" loading="lazy">
+          <img src="images/newsticker_nobg.png" class="new-badge" alt="NEW">
+        </div>
+      </a>
+      <div class="info">
+        <p class="title">1인 한상 세트</p>
+        <div class="cta-group">
+          <a class="cta cta-ohouse" href="https://ozip.me/DR2DBDT?af" target="_blank" rel="noopener noreferrer">
+            <div class="cta-top">
+              <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
+            <span class="cta-price">101,700원</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card" data-category="수납" data-price="480000" data-order="49">
+      <a class="img-link" href="https://ozip.me/aJZILKZ?af" target="_blank" rel="noopener noreferrer">
+        <div class="img-wrap">
+          <img src="products/kona-shelf-steel-corner-rack_card_1.png" alt="코나 선반 철제 코너랙 4colors" loading="lazy">
+          <img src="images/newsticker_nobg.png" class="new-badge" alt="NEW">
+        </div>
+      </a>
+      <div class="info">
+        <p class="title">코나 선반 철제 코너랙 4colors</p>
+        <div class="cta-group">
+          <a class="cta cta-ohouse" href="https://ozip.me/aJZILKZ?af" target="_blank" rel="noopener noreferrer">
+            <div class="cta-top">
+              <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
+            <span class="cta-price">480,000원</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card" data-category="소품" data-price="99000" data-order="50">
+      <a class="img-link" href="https://ozip.me/mGltiCk?af" target="_blank" rel="noopener noreferrer">
+        <div class="img-wrap">
+          <img src="products/zoom-mirror-clean-mini_card_1.png" alt="zoom mirror clean (MINI)" loading="lazy">
+          <img src="images/newsticker_nobg.png" class="new-badge" alt="NEW">
+        </div>
+      </a>
+      <div class="info">
+        <p class="title">zoom mirror clean (MINI)</p>
+        <div class="cta-group">
+          <a class="cta cta-ohouse" href="https://ozip.me/mGltiCk?af" target="_blank" rel="noopener noreferrer">
+            <div class="cta-top">
+              <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
+            <span class="cta-price">99,000원</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card" data-category="수납" data-price="515900" data-order="51">
+      <a class="img-link" href="https://ozip.me/WdOY0B9?af" target="_blank" rel="noopener noreferrer">
+        <div class="img-wrap">
+          <img src="products/martin-solid-wood-sideboard-2colors_card_1.png" alt="마틴 원목 사이드보드 2colors" loading="lazy">
+          <img src="images/newsticker_nobg.png" class="new-badge" alt="NEW">
+        </div>
+      </a>
+      <div class="info">
+        <p class="title">마틴 원목 사이드보드 2colors</p>
+        <div class="cta-group">
+          <a class="cta cta-ohouse" href="https://ozip.me/WdOY0B9?af" target="_blank" rel="noopener noreferrer">
+            <div class="cta-top">
+              <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
+            <span class="cta-price">515,900원</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card" data-category="소파" data-price="478000" data-order="52">
+      <a class="img-link" href="https://ozip.me/AI9GRP9?af" target="_blank" rel="noopener noreferrer">
+        <div class="img-wrap">
+          <img src="products/beam-fabric-1seater-sofa_card_1.png" alt="[오늘의집 단독] Beam 빔 패브릭 1인 소파 6 colors" loading="lazy">
+          <img src="images/newsticker_nobg.png" class="new-badge" alt="NEW">
+        </div>
+      </a>
+      <div class="info">
+        <p class="title">[오늘의집 단독] Beam 빔 패브릭 1인 소파 6 colors</p>
+        <div class="cta-group">
+          <a class="cta cta-ohouse" href="https://ozip.me/AI9GRP9?af" target="_blank" rel="noopener noreferrer">
+            <div class="cta-top">
+              <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
+            <span class="cta-price">478,000원</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card" data-category="침구" data-price="100000" data-order="53">
+      <a class="img-link" href="https://ozip.me/4DqTTxl?af" target="_blank" rel="noopener noreferrer">
+        <div class="img-wrap">
+          <img src="products/nondust-classic-stripe-allergy-care-duvet-cover-red_card_1.png" alt="논더스트 클래식 스트라이프 알러지케어 이불커버 레드" loading="lazy">
+          <img src="images/newsticker_nobg.png" class="new-badge" alt="NEW">
+        </div>
+      </a>
+      <div class="info">
+        <p class="title">논더스트 클래식 스트라이프 알러지케어 이불커버 레드</p>
+        <div class="cta-group">
+          <a class="cta cta-ohouse" href="https://ozip.me/4DqTTxl?af" target="_blank" rel="noopener noreferrer">
+            <div class="cta-top">
+              <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
+            <span class="cta-price">100,000원</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card" data-category="조명" data-price="150000" data-order="54">
+      <a class="img-link" href="https://ozip.me/fsNr4jU?af" target="_blank" rel="noopener noreferrer">
+        <div class="img-wrap">
+          <img src="products/ov-mercury-table-lamp-s_card_1.png" alt="[오늘의집 단독] OV-TLS006 MERCURY 머큐리 테이블 램프(S)" loading="lazy">
+          <img src="images/newsticker_nobg.png" class="new-badge" alt="NEW">
+        </div>
+      </a>
+      <div class="info">
+        <p class="title">[오늘의집 단독] OV-TLS006 MERCURY 머큐리 테이블 램프(S)</p>
+        <div class="cta-group">
+          <a class="cta cta-ohouse" href="https://ozip.me/fsNr4jU?af" target="_blank" rel="noopener noreferrer">
+            <div class="cta-top">
+              <img src="images/todayhouse_nobg.png" alt="오늘의집" class="cta-logo">
+              <span class="cta-arrow">↗</span>
+            </div>
+            <span class="cta-price">150,000원</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card" data-category="수납" data-price="950000" data-order="55">
       <a class="img-link" href="https://ozip.me/u1yhOtx?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/tall-trolley-stainless-steel_card_1.png" alt="Tall Trolley (Stainless steel)" loading="lazy">
+          <img src="images/newsticker_nobg.png" class="new-badge" alt="NEW">
         </div>
       </a>
       <div class="info">
@@ -1330,10 +1570,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="테이블" data-price="338900">
+    <div class="card" data-category="테이블" data-price="338900" data-order="56">
       <a class="img-link" href="https://ozip.me/6JNEe3F?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/maret-wood-porcelain-ceramic-table-1400_card_1.png" alt="마렛 원목 포세린 세라믹 4인 6인 사각 테이블 식탁 1400" loading="lazy">
+          <img src="images/newsticker_nobg.png" class="new-badge" alt="NEW">
         </div>
       </a>
       <div class="info">
@@ -1349,10 +1590,11 @@
         </div>
       </div>
     </div>
-    <div class="card" data-category="수납" data-price="179900">
+    <div class="card" data-category="수납" data-price="179900" data-order="57">
       <a class="img-link" href="https://ozip.me/tYhyUN1?af" target="_blank" rel="noopener noreferrer">
         <div class="img-wrap">
           <img src="products/steel-table-shelf-stand-2colors_card_1.png" alt="[오늘의집 단독] 전구증정! 국내자체제작 스틸 테이블 선반 스탠드_2colors" loading="lazy">
+          <img src="images/newsticker_nobg.png" class="new-badge" alt="NEW">
         </div>
       </a>
       <div class="info">
@@ -1392,6 +1634,11 @@
         const visible = cards.filter(c => !c.classList.contains('hidden'));
         const hidden = cards.filter(c => c.classList.contains('hidden'));
         visible.sort((a, b) => {
+          if (currentSort === 'newest') {
+            const oa = parseInt(a.dataset.order) || 0;
+            const ob = parseInt(b.dataset.order) || 0;
+            return ob - oa;
+          }
           const pa = parseInt(a.dataset.price) || 0;
           const pb = parseInt(b.dataset.price) || 0;
           return currentSort === 'asc' ? pa - pb : pb - pa;

@@ -1360,7 +1360,9 @@ def render_all_cards(content: dict, output_dir: str,
                      card6_img_idx: int = None,
                      custom_img_6: str = None,
                      card2_img_idx: int = None,
-                     card3_img_idx: int = None) -> list:
+                     card3_img_idx: int = None,
+                     custom_img_1: str = None,
+                     custom_img_4: str = None) -> list:
     """
     product_image_paths: str (단일 경로) 또는 list[str] (여러 뷰)
     카드별로 다른 제품 이미지 뷰를 배정해 시각적 다양성을 높임.
@@ -1406,13 +1408,17 @@ def render_all_cards(content: dict, output_dir: str,
     c3_fn  = (lambda: render_review(content["card3"], c3_picked)) if c3_tag == "REVIEW" \
              else (lambda: render_list(content["card3"], c3_picked))
 
+    c1_img  = custom_img_1 if custom_img_1 and os.path.exists(custom_img_1) else pick(0)
+    c4_img  = custom_img_4 if custom_img_4 and os.path.exists(custom_img_4) else pick(c2_img_idx)
+    c6_img  = custom_img_6 if custom_img_6 and os.path.exists(custom_img_6) else pick(card6_img_idx if card6_img_idx is not None else 3)
+
     cards = [
-        (1, lambda: render_hook    (content["card1"], pick(0))),
+        (1, lambda: render_hook    (content["card1"], c1_img)),
         (2, c2_fn),
         (3, c3_fn),
-        (4, lambda: render_stat    (content["card4"], pick(c2_img_idx))),
-        (5, lambda: render_solution(content["card5"], pick(0), features)),
-        (6, lambda: render_cta     (content["card6"], site_key, custom_img_6 if custom_img_6 and os.path.exists(custom_img_6) else pick(card6_img_idx if card6_img_idx is not None else 3))),
+        (4, lambda: render_stat    (content["card4"], c4_img)),
+        (5, lambda: render_solution(content["card5"], c1_img, features)),
+        (6, lambda: render_cta     (content["card6"], site_key, c6_img)),
     ]
 
     paths = []

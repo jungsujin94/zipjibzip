@@ -50,7 +50,8 @@
       "Bash(\"C:/Program Files/Python39/python.exe\" -m pip install pilmoji)",
       "Read(//c/Users/User/**)",
       "Bash(wait)",
-      "Bash(ls C:/cardnews/output/maret-wood-porcelain*)"
+      "Bash(ls C:/cardnews/output/maret-wood-porcelain*)",
+      "Bash(ls:*)"
     ],
     "additionalDirectories": [
       "C:\\cardnews\\output"

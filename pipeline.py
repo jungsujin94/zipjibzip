@@ -158,7 +158,7 @@ def _promote_best_card1_image(paths: list) -> list:
     return paths
 
 
-def run(url: str, force_img_idx: int = None, custom_img_path: str = None, custom_img_3: str = None, card6_img_idx: int = None, custom_img_6: str = None, card2_img_idx: int = None, card3_img_idx: int = None):
+def run(url: str, force_img_idx: int = None, custom_img_path: str = None, custom_img_3: str = None, card6_img_idx: int = None, custom_img_6: str = None, card2_img_idx: int = None, card3_img_idx: int = None, custom_img_1: str = None, custom_img_4: str = None):
     """
     force_img_idx:  0-based. 지정 시 birefnet 선별을 건너뛰고 해당 인덱스 이미지를 card1에 사용.
                    캐시된 content JSON이 있으면 AI 추출도 생략.
@@ -229,7 +229,7 @@ def run(url: str, force_img_idx: int = None, custom_img_path: str = None, custom
 
     # 6. 카드뉴스 PNG 렌더링
     print(f"[pipeline] 카드뉴스 이미지 생성 중...", flush=True)
-    output_paths = render_all_cards(card_content, OUTPUT_DIR, product_image_paths, custom_img_3=custom_img_3, card6_img_idx=card6_img_idx, custom_img_6=custom_img_6, card2_img_idx=card2_img_idx, card3_img_idx=card3_img_idx)
+    output_paths = render_all_cards(card_content, OUTPUT_DIR, product_image_paths, custom_img_3=custom_img_3, card6_img_idx=card6_img_idx, custom_img_6=custom_img_6, card2_img_idx=card2_img_idx, card3_img_idx=card3_img_idx, custom_img_1=custom_img_1, custom_img_4=custom_img_4)
 
     # 7. 카드 콘텐츠 JSON 저장
     slug = card_content.get("product_slug", "product")
@@ -323,6 +323,10 @@ if __name__ == "__main__":
                         help="card2·4에 쓸 이미지 번호 (1-based).")
     parser.add_argument("--img-3", type=int, default=None,
                         help="card3 스케치에 쓸 이미지 번호 (1-based).")
+    parser.add_argument("--custom-img-1", type=str, default=None,
+                        help="card1·5에 쓸 로컬 이미지 파일 경로.")
+    parser.add_argument("--custom-img-4", type=str, default=None,
+                        help="card4에 쓸 로컬 이미지 파일 경로.")
     args = parser.parse_args()
 
     force_idx = (args.img - 1) if args.img is not None else None
@@ -336,7 +340,9 @@ if __name__ == "__main__":
             card6_img_idx=card6_idx,
             custom_img_6=getattr(args, 'custom_img_6', None),
             card2_img_idx=card2_idx,
-            card3_img_idx=card3_idx)
+            card3_img_idx=card3_idx,
+            custom_img_1=getattr(args, 'custom_img_1', None),
+            custom_img_4=getattr(args, 'custom_img_4', None))
     except Exception as e:
         print(f"\n오류 발생: {e}", file=sys.stderr)
         sys.exit(1)
