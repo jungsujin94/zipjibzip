@@ -435,9 +435,9 @@
     "image": "products/willow-vintage-3fold-wall-mirror_card_1.png",
     "purchase_url": "https://ozip.me/stCjrPO?af",
     "category": "소품",
-    "coupang_url": "",
+    "coupang_url": "https://link.coupang.com/a/esZKAN",
     "ohouse price": "29,000원",
-    "coupang price": ""
+    "coupang price": "34,200원"
   },
   {
     "slug": "breville-barista-express-impress-bes876",
@@ -445,9 +445,9 @@
     "image": "products/breville-barista-express-impress-bes876_card_1.png",
     "purchase_url": "https://ozip.me/bm3hAbS?af",
     "category": "가전",
-    "coupang_url": "",
+    "coupang_url": "https://link.coupang.com/a/esZNkC",
     "ohouse price": "1,300,000원",
-    "coupang price": ""
+    "coupang price": "1,250,000원"
   },
   {
     "slug": "house-kitchen-rack-700-wine",
@@ -457,6 +457,16 @@
     "category": "수납",
     "coupang_url": "",
     "ohouse price": "297,000원",
+    "coupang price": ""
+  },
+  {
+    "slug": "layer-b-kraft-cardboard-shelf",
+    "title": "Layer B",
+    "image": "products/layer-b-kraft-cardboard-shelf_card_1.png",
+    "purchase_url": "https://ozip.me/JJezorm?af",
+    "category": "수납",
+    "coupang_url": "",
+    "ohouse price": "80,000원",
     "coupang price": ""
   },
   {
@@ -567,6 +577,26 @@
     "category": "테이블",
     "coupang_url": "",
     "ohouse price": "338,900원",
+    "coupang price": ""
+  },
+  {
+    "slug": "coldfog-chair",
+    "title": "콜드포그 - CHAIR 의자",
+    "image": "products/coldfog-chair_card_1.png",
+    "purchase_url": "https://ozip.me/GqPQ0jw?af",
+    "category": "의자",
+    "coupang_url": "",
+    "ohouse price": "450,000원",
+    "coupang price": ""
+  },
+  {
+    "slug": "seneca-system-shelf-bookcase",
+    "title": "세네카 시스템 선반 디자인 책장 벽선반",
+    "image": "products/seneca-system-shelf-bookcase_card_1.png",
+    "purchase_url": "https://ozip.me/rhlePr7?af",
+    "category": "수납",
+    "coupang_url": "",
+    "ohouse price": "299,000원",
     "coupang price": ""
   },
   {

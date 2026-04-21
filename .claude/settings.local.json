@@ -51,7 +51,8 @@
       "Read(//c/Users/User/**)",
       "Bash(wait)",
       "Bash(ls C:/cardnews/output/maret-wood-porcelain*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(kill %1)"
     ],
     "additionalDirectories": [
       "C:\\cardnews\\output"
