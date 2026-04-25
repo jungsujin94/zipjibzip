@@ -224,7 +224,7 @@ def run(url: str, force_img_idx: int = None, custom_img_path: str = None, custom
         card_content = cached_content
     else:
         print(f"[pipeline] Claude로 USP 분석 중...", flush=True)
-        card_content = extract_card_content(scraped_data, api_key)
+        card_content = extract_card_content(scraped_data, api_key, output_dir=OUTPUT_DIR)
         card_content = validate_content(card_content, scraped_data)
 
     # 6. 카드뉴스 PNG 렌더링
